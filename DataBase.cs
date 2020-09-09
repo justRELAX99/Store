@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Store_kurs
 {
-    class DataBase
+    public class DataBase
     {
         private SqlConnection conn;
         public DataBase()
@@ -19,7 +19,7 @@ namespace Store_kurs
             String nameDataBase = "Store";
             String userID = "sa";
             String password = "123";
-            SqlConnection conn = ConnectToSql(dataSource, nameDataBase, userID, password);
+            SqlConnection conn = connectToSql(dataSource, nameDataBase, userID, password);
             this.conn = conn;
         }
 
@@ -40,7 +40,7 @@ namespace Store_kurs
             }
         }
 
-        public SqlConnection ConnectToSql(String dataSource, String nameDataBase, String userID, String password)
+        public SqlConnection connectToSql(String dataSource, String nameDataBase, String userID, String password)
         {
 
             SqlConnection conn = new SqlConnection();
@@ -104,7 +104,7 @@ namespace Store_kurs
             return checkData;
         }
 
-        public User checkLoginPassword(String login, String password)//проверка,есть ли в бд юзер с таким логином и паролем,если есть,то возвращаем его роль.
+        public User checkLoginPassword(String login, String password)//проверка,есть ли в бд юзер с таким логином и паролем
         {
             User user;
 
@@ -222,7 +222,31 @@ namespace Store_kurs
             MessageBox.Show("Sale card created successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public DataSet getProduct()
+        public DataSet getProductMaxInf()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
+                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
+                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price" + '\n' +
+                                    "FROM(((Product LEFT JOIN Company" + '\n' +
+                                        "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
+                                          "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
+                                            "ON Product.Characteristic = Characteristic.ID)";
+
+            //cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Product.Price" + '\n' +
+            //                        "FROM((Product LEFT JOIN Company" + '\n' +
+            //                            "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
+            //                              "ON Product.Model = Model.ID)";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Product");
+            return ds;
+        }
+
+        public DataSet getProductMinInf()
         {
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmdSelect = conn.CreateCommand();
@@ -306,7 +330,7 @@ namespace Store_kurs
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmdSelect = conn.CreateCommand();
 
-            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Product.Price" + '\n' +
+            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Product.Price,Basket.ID" + '\n' +
                                     "FROM (((Basket LEFT JOIN Product" + '\n' +
                                         "ON Basket.Product=Product.ID) LEFT JOIN COMPANY" + '\n' +
                                         "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
@@ -321,7 +345,29 @@ namespace Store_kurs
             return ds;
         }
 
-        public void deleteProductFromBasket(int userID,int productID)
+        public DataSet getBasketMaxInf(int userID)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
+                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
+                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price,Basket.ID" + '\n' +
+                                    "FROM((((Basket LEFT JOIN Product" + '\n' +
+                                          "ON Basket.Product = Product.ID) LEFT JOIN Company" + '\n' +
+                                          "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
+                                          "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
+                                          "ON Product.Characteristic = Characteristic.ID)";
+
+            cmdSelect.Parameters.AddWithValue("@userID", userID);
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Basket");
+            return ds;
+        }
+
+        public void deleteProductFromBasketByProductID(int userID,int productID)
         {
             SqlCommand cmdDelete = conn.CreateCommand();
             cmdDelete.CommandText = "DELETE Basket" + '\n' +
@@ -330,6 +376,103 @@ namespace Store_kurs
             cmdDelete.Parameters.AddWithValue("@userID", userID);
             cmdDelete.Parameters.AddWithValue("@productID", productID);
             cmdDelete.ExecuteNonQuery();
+        }
+
+        public void deleteProductFromBasketByBasketID(int userID, int basketID)
+        {
+            SqlCommand cmdDelete = conn.CreateCommand();
+            cmdDelete.CommandText = "DELETE Basket" + '\n' +
+                                    "WHERE[User] = @userID AND ID = @basketID";
+
+            cmdDelete.Parameters.AddWithValue("@userID", userID);
+            cmdDelete.Parameters.AddWithValue("@basketID", basketID);
+            cmdDelete.ExecuteNonQuery();
+        }
+
+        public void createOrder(int userID,DateTime date,String status)
+        {
+            SqlCommand cmdInsert = conn.CreateCommand();
+            cmdInsert.CommandText = "INSERT INTO[Order]([User], Date, Status)" + '\n' +
+                                    "VALUES(@userID, @date, @status)";
+
+            cmdInsert.Parameters.AddWithValue("@userID", userID);
+            cmdInsert.Parameters.AddWithValue("@date", date);
+            cmdInsert.Parameters.AddWithValue("@status", status);
+            cmdInsert.ExecuteNonQuery();
+        }
+        
+        public void createOrderProduct(int order,int product)
+        {
+            SqlCommand cmdInsert = conn.CreateCommand();
+            cmdInsert.CommandText = "INSERT INTO OrderProduct([Order],Product)" + '\n' +
+                                    "VALUES (@order,@product)";
+
+            cmdInsert.Parameters.AddWithValue("@order", order);
+            cmdInsert.Parameters.AddWithValue("@product", product);
+            cmdInsert.ExecuteNonQuery();
+        }
+
+        public void createDelivery(int order,String address,String status)
+        {
+            SqlCommand cmdInsert = conn.CreateCommand();
+            cmdInsert.CommandText = "INSERT INTO Delivery([Order],Address,Status)" + '\n' +
+                                    "VALUES (@order,@address,@status)";
+
+            cmdInsert.Parameters.AddWithValue("@order", order);
+            cmdInsert.Parameters.AddWithValue("@address", address);
+            cmdInsert.Parameters.AddWithValue("@status", status);
+            cmdInsert.ExecuteNonQuery();
+        }
+
+        public DataSet getAllOrders(int userID)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM [Order]" + '\n' +
+                                    "WHERE [User]=@userID";
+
+            cmdSelect.Parameters.AddWithValue("@userID", userID);
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Order");
+            return ds;
+        }
+
+        public DataSet getAllOrderProduct(int order)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM OrderProduct" + '\n' +
+                                    "WHERE [Order]=@order";
+
+            cmdSelect.Parameters.AddWithValue("@order", order);
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "OrderProduct");
+            return ds;
+        }
+
+        public DataSet getDelivery(int order)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM Delivery" + '\n' +
+                                    "WHERE [Order]=@order";
+
+            cmdSelect.Parameters.AddWithValue("@order", order);
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Delivery");
+            return ds;
         }
     }
 }

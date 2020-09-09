@@ -6,21 +6,22 @@ using System.Threading.Tasks;
 
 namespace Store_kurs
 {
-    class Product
+    public class Product
     {
-        public int ID;
-        public String country;
-        public String company;
-        public String model;
-        public String series;
-        public int memory;
-        public int frequency;
-        public int capacity;
-        public String memoryType;
-        public int maximumThroughput;
-        public String Interface;
+        public int ID { get; set; }
+        public String country{ get; set; }
+        public String company { get; set; }
+        public String model { get; set; }
+        public String series { get; set; }
+        public int memory { get; set; }
+        public int frequency { get; set; }
+        public int capacity { get; set; }
+        public String memoryType { get; set; }
+        public int maximumThroughput { get; set; }
+        public String Interface { get; set; }
+        public int price { get; set; }
 
-        Product(int ID, String country,String company,String model,String series,int memory,int frequency,int capacity,String memoryType,int maximumThroughput,String Interface)
+        public Product(int ID, String country,String company,String model,String series,int memory,int frequency,int capacity,String memoryType,int maximumThroughput,String Interface,int price)
         {
             this.ID = ID;
             this.country = country;
@@ -33,6 +34,12 @@ namespace Store_kurs
             this.memoryType = memoryType;
             this.maximumThroughput = maximumThroughput;
             this.Interface=Interface;
+            this.price = price;
+        }
+
+        public Product()
+        {
+
         }
     }
 }

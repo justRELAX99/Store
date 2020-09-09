@@ -9,13 +9,13 @@ namespace Store_kurs
 {
     public class User
     {
-        public int ID;
-        public int role;
-        public String login;
-        public String password;
-        public String name;
-        public String secondName;
-        
+        public int ID { get; set; }
+        public int role { get; set; }
+        public String login { get; set; }
+        public String password { get; set; }
+        public String name { get; set; }
+        public String secondName { get; set; }
+
         public User()
         {
             this.ID = -1;//ставим значение -1 для проверки если юзера не нашлось в бд,тк столбец в бд не может быть отрицательным 
