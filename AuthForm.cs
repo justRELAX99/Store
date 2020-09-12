@@ -29,8 +29,8 @@ namespace Store_kurs
 
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
             {
-                try
-                {
+                //try
+                //{
                     user = DB.checkLoginPassword(login, password);
                     if (user.ID != -1)//если есть такой пользователь,переходим в главное окно
                     {
@@ -40,12 +40,12 @@ namespace Store_kurs
                     {
                         MessageBox.Show("Invalid username or password", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                }
+                //}
 
-                catch
-                {
-                    MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                //catch
+                //{
+                //    MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //}
                 DB.closeConnection();
             }
             else

@@ -295,17 +295,17 @@ namespace Store_kurs
         public void addProductToBasket(int userID,int productID)
         {
             SqlCommand cmdInsert = conn.CreateCommand();
-            cmdInsert.CommandText = "INSERT INTO Basket([User],Product)" + '\n' +
-                                    "VALUES(@userID,@productID)";
+            cmdInsert.CommandText = "INSERT INTO Basket([User],Product,[Count])" + '\n' +
+                                    "VALUES(@userID,@productID,1)";
 
             cmdInsert.Parameters.AddWithValue("@userID", userID);
             cmdInsert.Parameters.AddWithValue("@productID", productID);
             cmdInsert.ExecuteNonQuery();
         }
 
-        public Boolean checkProductInBasket(int userID,int productID)//проверяем,есть ли такой товар уже в корзине у пользователя
+        public int checkProductInBasket(int userID,int productID)//проверяем,есть ли такой товар уже в корзине у пользователя.Если есть,то возвращает номер корзины,если нет то 0
         {
-            Boolean checkProduct = false;
+            int basketID = 0;
 
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmdSelect = conn.CreateCommand();
@@ -320,9 +320,23 @@ namespace Store_kurs
             DataSet ds = new DataSet();
             da.Fill(ds, "Basket");
             if (ds.Tables["Basket"].Rows.Count > 0)
-                checkProduct = true;
+                basketID = Convert.ToInt32(ds.Tables["Basket"].Rows[0].ItemArray[0].ToString()); ;
 
-            return checkProduct;
+            return basketID;
+        }
+
+        public void changeCountProductInBasket(int basketID,int userID,int value)
+        {
+            SqlCommand cmdInsert = conn.CreateCommand();
+
+            cmdInsert.CommandText = "UPDATE Basket" + '\n' +
+                                    "SET [Count]=Basket.[Count]+@value" + '\n' +
+                                    "WHERE Basket.ID=@basketID AND Basket.[User]=@userID";
+
+            cmdInsert.Parameters.AddWithValue("@value", value);
+            cmdInsert.Parameters.AddWithValue("@basketID", basketID);
+            cmdInsert.Parameters.AddWithValue("@userID", userID);
+            cmdInsert.ExecuteNonQuery();
         }
 
         public DataSet getBasket(int userID)
@@ -330,7 +344,7 @@ namespace Store_kurs
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmdSelect = conn.CreateCommand();
 
-            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Product.Price,Basket.ID" + '\n' +
+            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Product.Price,Basket.ID,Basket.[Count]" + '\n' +
                                     "FROM (((Basket LEFT JOIN Product" + '\n' +
                                         "ON Basket.Product=Product.ID) LEFT JOIN COMPANY" + '\n' +
                                         "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
@@ -352,12 +366,13 @@ namespace Store_kurs
 
             cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
                                         "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
-                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price,Basket.ID" + '\n' +
+                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price,Basket.ID,Basket.[Count]" + '\n' +
                                     "FROM((((Basket LEFT JOIN Product" + '\n' +
                                           "ON Basket.Product = Product.ID) LEFT JOIN Company" + '\n' +
                                           "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
                                           "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
-                                          "ON Product.Characteristic = Characteristic.ID)";
+                                          "ON Product.Characteristic = Characteristic.ID)" + '\n' +
+                                    "Where [User]=@userID";
 
             cmdSelect.Parameters.AddWithValue("@userID", userID);
             da.SelectCommand = cmdSelect;
@@ -365,6 +380,16 @@ namespace Store_kurs
             DataSet ds = new DataSet();
             da.Fill(ds, "Basket");
             return ds;
+        }
+
+        public void deleteProductFromBasketByUserID(int userID)
+        {
+            SqlCommand cmdDelete = conn.CreateCommand();
+            cmdDelete.CommandText = "DELETE Basket" + '\n' +
+                                    "WHERE[User] = @userID";
+
+            cmdDelete.Parameters.AddWithValue("@userID", userID);
+            cmdDelete.ExecuteNonQuery();
         }
 
         public void deleteProductFromBasketByProductID(int userID,int productID)
@@ -401,14 +426,15 @@ namespace Store_kurs
             cmdInsert.ExecuteNonQuery();
         }
         
-        public void createOrderProduct(int order,int product)
+        public void createOrderProduct(int order,int product,int count)
         {
             SqlCommand cmdInsert = conn.CreateCommand();
-            cmdInsert.CommandText = "INSERT INTO OrderProduct([Order],Product)" + '\n' +
-                                    "VALUES (@order,@product)";
+            cmdInsert.CommandText = "INSERT INTO OrderProduct([Order],Product,[Count])" + '\n' +
+                                    "VALUES (@order,@product,@count)";
 
             cmdInsert.Parameters.AddWithValue("@order", order);
             cmdInsert.Parameters.AddWithValue("@product", product);
+            cmdInsert.Parameters.AddWithValue("@count", count);
             cmdInsert.ExecuteNonQuery();
         }
 
@@ -434,6 +460,24 @@ namespace Store_kurs
                                     "WHERE [User]=@userID";
 
             cmdSelect.Parameters.AddWithValue("@userID", userID);
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Order");
+            return ds;
+        }
+
+        public DataSet getAllOrdersByDate(int userID,DateTime date)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM [Order]" + '\n' +
+                                    "WHERE [User]=@userID AND Date=@date";
+
+            cmdSelect.Parameters.AddWithValue("@userID", userID);
+            cmdSelect.Parameters.AddWithValue("@date", date);
             da.SelectCommand = cmdSelect;
 
             DataSet ds = new DataSet();
@@ -473,6 +517,146 @@ namespace Store_kurs
             DataSet ds = new DataSet();
             da.Fill(ds, "Delivery");
             return ds;
+        }
+
+        public DataSet getAllCompany()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM Company";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Company");
+            return ds;
+        }
+
+        public DataSet getAllModel()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM Model";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Model");
+            return ds;
+        }
+
+        public DataSet getAllCharacteristic()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM Characteristic";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Characteristic");
+            return ds;
+        }
+
+        public void saveCompany(DataSet ds)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            SqlCommand cmdInsert = conn.CreateCommand();
+            SqlCommand cmdDelete = conn.CreateCommand();
+            SqlCommand cmdUpdate = conn.CreateCommand();
+
+
+            cmdInsert.CommandText = "INSERT INTO dbo.Company(Name,Country)" + '\n' +
+                                    "VALUES(@name, @country);";
+
+            cmdDelete.CommandText = "DELETE" + '\n' +
+                                    "FROM dbo.Company" + '\n' +
+                                    "WHERE ID = @ID AND Name = @name AND Country = @country";
+
+            cmdUpdate.CommandText = "UPDATE dbo.Company" + '\n' +
+                                    "SET Name = @name , Country = @country" + '\n' +
+                                    "WHERE ID = @ID";
+
+            cmdInsert.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@name"].SourceColumn = "Name";
+            cmdInsert.Parameters.Add("@country", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@country"].SourceColumn = "Country";
+
+            cmdDelete.Parameters.Add("@ID", SqlDbType.Int);
+            cmdDelete.Parameters["@ID"].SourceColumn = "ID";
+            cmdDelete.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@name"].SourceColumn = "Name";
+            cmdDelete.Parameters.Add("@country", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@country"].SourceColumn = "Country";
+
+            cmdUpdate.Parameters.Add("@ID", SqlDbType.Int);
+            cmdUpdate.Parameters["@ID"].SourceColumn = "ID";
+            cmdUpdate.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@name"].SourceColumn = "Name";
+            cmdUpdate.Parameters.Add("@country", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@country"].SourceColumn = "Country";
+
+
+            da.InsertCommand = cmdInsert;
+            da.DeleteCommand = cmdDelete;
+            da.UpdateCommand = cmdUpdate;
+
+            da.Update(ds.Tables["Company"].Select(null, null, DataViewRowState.Added));
+            da.Update(ds.Tables["Company"].Select(null, null, DataViewRowState.ModifiedCurrent));
+            da.Update(ds.Tables["Company"].Select(null, null, DataViewRowState.Deleted));
+        }
+
+        public void saveModel(DataSet ds)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            SqlCommand cmdInsert = conn.CreateCommand();
+            SqlCommand cmdDelete = conn.CreateCommand();
+            SqlCommand cmdUpdate = conn.CreateCommand();
+
+
+            cmdInsert.CommandText = "INSERT INTO dbo.Model(Name,Series)" + '\n' +
+                                    "VALUES(@name, @series);";
+
+            cmdDelete.CommandText = "DELETE" + '\n' +
+                                    "FROM dbo.Model" + '\n' +
+                                    "WHERE ID = @ID AND Name = @name AND Series = @series";
+
+            cmdUpdate.CommandText = "UPDATE dbo.Model" + '\n' +
+                                    "SET Name = @name , Series = @series" + '\n' +
+                                    "WHERE ID = @ID";
+
+            cmdInsert.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@name"].SourceColumn = "Name";
+            cmdInsert.Parameters.Add("@series", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@series"].SourceColumn = "Series";
+
+            cmdDelete.Parameters.Add("@ID", SqlDbType.Int);
+            cmdDelete.Parameters["@ID"].SourceColumn = "ID";
+            cmdDelete.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@name"].SourceColumn = "Name";
+            cmdDelete.Parameters.Add("@series", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@series"].SourceColumn = "Series";
+
+            cmdUpdate.Parameters.Add("@ID", SqlDbType.Int);
+            cmdUpdate.Parameters["@ID"].SourceColumn = "ID";
+            cmdUpdate.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@name"].SourceColumn = "Name";
+            cmdUpdate.Parameters.Add("@series", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@series"].SourceColumn = "Series";
+
+
+            da.InsertCommand = cmdInsert;
+            da.DeleteCommand = cmdDelete;
+            da.UpdateCommand = cmdUpdate;
+
+            da.Update(ds.Tables["Model"].Select(null, null, DataViewRowState.Added));
+            da.Update(ds.Tables["Model"].Select(null, null, DataViewRowState.ModifiedCurrent));
+            da.Update(ds.Tables["Model"].Select(null, null, DataViewRowState.Deleted));
         }
     }
 }

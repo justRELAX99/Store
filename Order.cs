@@ -12,17 +12,17 @@ namespace Store_kurs
         public int userID { get; set; }
         public DateTime date { get; set; }
         public String status { get; set; }
-        public List<int> products { get; set; }
-        public int deliveryID { get; set; }
+        public List<ProductInOrder> products { get; set; }
+        public Delivery delivery { get; set; }
 
-        public Order(int ID,int userID,DateTime date,String status,List<int> products,int deliveryID)
+        public Order(int ID,int userID,DateTime date,String status,List<ProductInOrder> products,Delivery delivery)
         {
             this.ID = ID;
             this.userID = userID;
             this.date = date;
             this.status = status;
             this.products = products;
-            this.deliveryID = deliveryID;
+            this.delivery = delivery;
         }
 
         public Order(int userID)

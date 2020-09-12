@@ -14,10 +14,12 @@ namespace Store_kurs
 {
     public partial class MainForm : Form
     {
+        public Administration administration=new Administration();
         public User user;
         public List<Product> products = new List<Product>();
         public Basket basket;
         public List<Order> orders=new List<Order>();
+        public List<Characteristic> characteristics = new List<Characteristic>();
 
         public MainForm(User user)
         {
@@ -35,19 +37,27 @@ namespace Store_kurs
 
                     DataSet dsSaleCard = DB.getSaleCardInfo(user.ID);//получаем данные о скидочной карте
 
-
                     DataSet dsProduct = DB.getProductMaxInf();//получаем данные о продукции
-                    updateProducts(dsProduct, products);//заполняет лист продуктов
+                    products=updateProducts(dsProduct);//заполняет лист продуктов
                     products_bs.DataSource = products;//устанавливаем в dgv полученные данные о продукции
-
+                    
                     DataSet dsBasket = DB.getBasketMaxInf(user.ID);//получаем данные о корзине
                     basket = new Basket(user.ID);//создаем модель корзины
-                    updateBasket(dsBasket, basket);//заполняем поле словаря в корзине
+                    basket.updateBasket(dsBasket);//заполняем поле словаря в корзине
                     basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
 
+
                     DataSet dsOrder = DB.getAllOrders(user.ID);//получаем данные о заказах
-                    updateOrders(dsOrder, orders,DB);//заполняем информацию о заказах
+                    orders=updateOrders(dsOrder,DB);//заполняем информацию о заказах
                     orders_bs.DataSource = orders;
+
+                    administration.getAllDataFromDB(DB);//заполняем дата сеты из базы
+                    company_bs.DataSource = administration.dsCompany.Tables["Company"];//заполняем биндинг соурс датасетами
+                    model_bs.DataSource = administration.dsModel.Tables["Model"];
+
+
+                    characteristics = updateCharacteristics(administration.dsCharacteristic);
+                    characteristic_bs.DataSource = characteristics;
 
                     if (dsSaleCard.Tables["SaleCard"].Rows.Count > 0)//если карта существует,то выводим
                     {
@@ -77,44 +87,127 @@ namespace Store_kurs
                 store_tc.TabPages[1].Parent = null;
         }
 
-        public void updateOrders(DataSet dsOrder,List<Order> orders,DataBase DB)
+        public List<Characteristic> updateCharacteristics(DataSet dsCharacteristic)
         {
-            List<int> products = new List<int>();
-            int deliveryID=0;
-            int ID;//переменные для заполнения полей модели
+            List<Characteristic> characteristics = new List<Characteristic>();
+            Characteristic characteristic;
+            int characteristicID;
+            int memory;
+            int frequency;
+            int capacity;
+            String memoryType;
+            int maximumThroughput;
+            String Interface;
+
+
+            if (dsCharacteristic.Tables["Characteristic"].Rows.Count == 0)
+            {
+                //MessageBox.Show("Characteristics not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return characteristics;
+            }
+            for (int i = 0; i < dsCharacteristic.Tables["Characteristic"].Rows.Count; i++)
+            {
+                characteristicID= Convert.ToInt32(dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[0].ToString());//ид характеристики
+                memory = Convert.ToInt32(dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[1].ToString());//объем памяти характеристики
+                frequency = Convert.ToInt32(dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[2].ToString());//частота характеристики
+                capacity = Convert.ToInt32(dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[3].ToString());//разрядность характеристики
+                memoryType = dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[4].ToString();//Тип памяти характеристики
+                maximumThroughput = Convert.ToInt32(dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[5].ToString());//максимальная пропускная способность характеристики
+                Interface = dsCharacteristic.Tables["Characteristic"].Rows[i].ItemArray[6].ToString();//Интерфейс характеристики
+                characteristic = new Characteristic(characteristicID, memory, frequency, capacity, memoryType, maximumThroughput, Interface);
+                characteristics.Add(characteristic);
+            }
+
+             return characteristics;
+
+        }
+
+        public List<Order> updateOrders(DataSet dsOrder,DataBase DB)
+        {
+            List<Order> orders= new List<Order>();
+            List<ProductInOrder> products;
+            ProductInOrder product;
+            int productID;
+            String country;
+            String company;
+            String model;
+            String series;
+            int memory;
+            int frequency;
+            int capacity;
+            String memoryType;
+            int maximumThroughput;
+            String Interface;
+            int price;
+            int countProduct;
+
+            Delivery delivery=new Delivery();
+            int deliveryID;
+            int deliveryOder;
+            String deliveryAddress;
+            String deliveryStatus;
+
+            int orderID;//переменные для заполнения полей модели
             DateTime date;
             String status;
 
             if (dsOrder.Tables["Order"].Rows.Count==0)
             {
-                MessageBox.Show("Orders not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                //MessageBox.Show("Orders not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return orders;
             }
-            orders.Clear();
 
-            for(int i=0;i< dsOrder.Tables["Order"].Rows.Count; i++)
+            for (int i=0;i< dsOrder.Tables["Order"].Rows.Count; i++)
             {
-                ID= Convert.ToInt32(dsOrder.Tables["Order"].Rows[i].ItemArray[0].ToString());//ид заказа
+                orderID= Convert.ToInt32(dsOrder.Tables["Order"].Rows[i].ItemArray[0].ToString());//ид заказа
                 date=Convert.ToDateTime(dsOrder.Tables["Order"].Rows[i].ItemArray[2].ToString());//дата заказа
                 status= dsOrder.Tables["Order"].Rows[i].ItemArray[3].ToString();//статус заказа
+                
                 try
                 {
-                    DataSet dsOrderProducts = DB.getAllOrderProduct(ID);//получаем данные из таблицы ЗаказПродукт
+                    products = new List<ProductInOrder>();
+                    DataSet dsOrderProducts = DB.getAllOrderProduct(orderID);//получаем данные из таблицы ЗаказПродукт
                     if (dsOrderProducts.Tables["OrderProduct"].Rows.Count != 0)
-                    {
-                        products.Clear();
+                    {                     
                         for (int j = 0; j < dsOrderProducts.Tables["OrderProduct"].Rows.Count; j++)
                         {
-                            products.Add(Convert.ToInt32(dsOrderProducts.Tables["OrderProduct"].Rows[j].ItemArray[2].ToString()));//сохраняем id продуктов
+                            productID = Convert.ToInt32(dsOrderProducts.Tables["OrderProduct"].Rows[j].ItemArray[2].ToString());
+                            countProduct= Convert.ToInt32(dsOrderProducts.Tables["OrderProduct"].Rows[j].ItemArray[3].ToString());
+                            DataSet dsProduct = DB.getProduct(productID);//получаем данные о продукции
+
+                            if (dsProduct.Tables["Product"].Rows.Count == 0)
+                            {
+                                MessageBox.Show("Products "+productID+" not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                continue;
+                            }
+                            country = dsProduct.Tables["Product"].Rows[0].ItemArray[1].ToString();
+                            company = dsProduct.Tables["Product"].Rows[0].ItemArray[2].ToString();
+                            model = dsProduct.Tables["Product"].Rows[0].ItemArray[3].ToString();
+                            series = dsProduct.Tables["Product"].Rows[0].ItemArray[4].ToString();
+                            memory = Convert.ToInt32(dsProduct.Tables["Product"].Rows[0].ItemArray[5].ToString());
+                            frequency = Convert.ToInt32(dsProduct.Tables["Product"].Rows[0].ItemArray[6].ToString());
+                            capacity = Convert.ToInt32(dsProduct.Tables["Product"].Rows[0].ItemArray[7].ToString());
+                            memoryType = dsProduct.Tables["Product"].Rows[0].ItemArray[8].ToString();
+                            maximumThroughput = Convert.ToInt32(dsProduct.Tables["Product"].Rows[0].ItemArray[9].ToString());
+                            Interface = dsProduct.Tables["Product"].Rows[0].ItemArray[10].ToString();
+                            price = Convert.ToInt32(dsProduct.Tables["Product"].Rows[0].ItemArray[11].ToString());
+
+                            product = new ProductInOrder(orderID, country, company, model, series, memory, frequency, capacity, memoryType, maximumThroughput, Interface, price,countProduct);
+                           
+                            products.Add(product);//сохраняем информацию о продукте
                         }
                     }
 
-                    DataSet dsDelivery = DB.getDelivery(ID);//получаем данные из таблицы Доставка
+                    DataSet dsDelivery = DB.getDelivery(orderID);//получаем данные из таблицы Доставка
                     if (dsDelivery.Tables["Delivery"].Rows.Count != 0)
                     {
-                        deliveryID=Convert.ToInt32(dsDelivery.Tables["Delivery"].Rows[0].ItemArray[0].ToString());//сохраняем id доставки
+                        deliveryID=Convert.ToInt32(dsDelivery.Tables["Delivery"].Rows[0].ItemArray[0].ToString());//сохраняем данные о доставке
+                        deliveryOder= Convert.ToInt32(dsDelivery.Tables["Delivery"].Rows[0].ItemArray[1].ToString());//сохраняем id доставки
+                        deliveryAddress = dsDelivery.Tables["Delivery"].Rows[0].ItemArray[2].ToString();
+                        deliveryStatus= dsDelivery.Tables["Delivery"].Rows[0].ItemArray[3].ToString();
+                        delivery = new Delivery(deliveryID, deliveryOder, deliveryAddress, deliveryStatus);
                     }
-                    Order order = new Order(ID, user.ID, date, status, products, deliveryID);
+                    Order order = new Order(orderID, user.ID, date, status, products, delivery);
                     orders.Add(order);
                 }
                 catch
@@ -122,10 +215,12 @@ namespace Store_kurs
                     MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }       
             }
+            return orders;
         }
 
-        public void updateProducts(DataSet dsProduct,List<Product> products)
+        public List<Product> updateProducts(DataSet dsProduct)
         {
+            List<Product> products = new List<Product>();
             Product product;
             int ID;//переменные для заполнения полей модели
             String country;
@@ -140,13 +235,11 @@ namespace Store_kurs
             String Interface;
             int price;
 
-            if(dsProduct.Tables["Product"].Rows.Count==0)
+            if (dsProduct.Tables["Product"].Rows.Count==0)
             {
                 MessageBox.Show("Products not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return products;
             }
-
-            products.Clear();
 
             for (int i = 0; i < dsProduct.Tables["Product"].Rows.Count; i++)
             {
@@ -166,57 +259,8 @@ namespace Store_kurs
                 product = new Product(ID, country, company, model, series, memory, frequency, capacity, memoryType, maximumThroughput, Interface, price);
                 products.Add(product);
             }
+            return products;
         }
-
-        public void updateBasket(DataSet dsBasket,Basket basket)//в dsBasket содержится множество корзин,принадлежащих юзеру
-        {
-            Product product;
-            int productID;//переменные для заполнения полей модели
-            String country;
-            String company;
-            String model;
-            String series;
-            int memory;
-            int frequency;
-            int capacity;
-            String memoryType;
-            int maximumThroughput;
-            String Interface;
-            int price;
-            int basketID;
-
-
-            if (dsBasket.Tables["Basket"].Rows.Count == 0)
-            {
-                MessageBox.Show("Basket not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            basket.productInBasket.Clear();
-
-            for (int i = 0; i < dsBasket.Tables["Basket"].Rows.Count; i++)
-            {
-                productID = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[0].ToString());
-                country = dsBasket.Tables["Basket"].Rows[i].ItemArray[1].ToString();
-                company = dsBasket.Tables["Basket"].Rows[i].ItemArray[2].ToString();
-                model = dsBasket.Tables["Basket"].Rows[i].ItemArray[3].ToString();
-                series = dsBasket.Tables["Basket"].Rows[i].ItemArray[4].ToString();
-                memory = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[5].ToString());
-                frequency = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[6].ToString());
-                capacity = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[7].ToString());
-                memoryType = dsBasket.Tables["Basket"].Rows[i].ItemArray[8].ToString();
-                maximumThroughput = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[9].ToString());
-                Interface = dsBasket.Tables["Basket"].Rows[i].ItemArray[10].ToString();
-                price = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[11].ToString());
-
-                basketID = Convert.ToInt32(dsBasket.Tables["Basket"].Rows[i].ItemArray[12].ToString());
-
-                product = new Product(productID, country, company, model, series, memory, frequency, capacity, memoryType, maximumThroughput, Interface, price);
-                basket.productInBasket.Add(basketID, product);
-            }
-        }
-
-
 
         private void changeData_btn_Click(object sender, EventArgs e)
         {
@@ -453,6 +497,8 @@ namespace Store_kurs
         private void products_dgv_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             int rowIndex;
+            if (products.Count == 0)//если продуктов нет,то ничего не происходит
+                return;
             rowIndex = products_dgv.CurrentCell.RowIndex;
             ProductInformationForm productInformation = new ProductInformationForm(products[rowIndex]);
             productInformation.ShowDialog();
@@ -462,7 +508,7 @@ namespace Store_kurs
         {
             int rowIndex;
             int productID;
-            Boolean checkProduct = false;//если меняется на true,то данный товар уже есть в корзине
+            int basketID = 0;//если меняется на любое число,то данный товар уже есть в корзине под этим индексом
 
             rowIndex = products_dgv.CurrentCell.RowIndex;
             productID = products[rowIndex].ID;
@@ -472,19 +518,25 @@ namespace Store_kurs
             {
                 try
                 {
-                    checkProduct = DB.checkProductInBasket(user.ID, productID);
-                    if(checkProduct==false)//если товара нет в корзине,то добавляем его
+                    basketID = DB.checkProductInBasket(user.ID, productID);
+                    if(basketID==0)//если товара нет в корзине,то добавляем его
                     {
                         DB.addProductToBasket(user.ID, productID);
                         MessageBox.Show("Product added to basket successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         DataSet dsBasket = DB.getBasketMaxInf(user.ID);//получаем данные о корзине
-                        updateBasket(dsBasket, basket);//заполняем поле словаря в корзине
+                        basket.updateBasket(dsBasket);//заполняем поле словаря в корзине
                         basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
                     }
-                    else
+                    else//если товар уже есть в корзине,то меняем его число на +1
                     {
-                        MessageBox.Show("The product is already in the basket", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        DB.changeCountProductInBasket(basketID, user.ID, 1);
+
+                        DataSet dsBasket = DB.getBasketMaxInf(user.ID);//получаем данные о корзине
+                        basket.updateBasket(dsBasket);//заполняем поле словаря в корзине
+                        basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+
+                        MessageBox.Show("This product was added again successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 catch
@@ -502,8 +554,26 @@ namespace Store_kurs
 
         private void basket_dgv_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            int rowIndex;
-            rowIndex = basket_dgv.CurrentCell.RowIndex;
+            int rowIndex = basket_dgv.CurrentCell.RowIndex;
+            int columnIndex = basket_dgv.CurrentCell.ColumnIndex;
+            if (basket.productInBasket.Count == 0)//если корзина пуста,то ничего не происходит
+                return;
+            //if (columnIndex == 12)//клик по count
+            //    return;
+            if (columnIndex == 13)
+            {
+                if (basket.productInBasket.ElementAt(rowIndex).Value.inOrder)
+                {
+                    basket.productInBasket.ElementAt(rowIndex).Value.inOrder = false;
+                    basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+                }
+                else
+                {
+                    basket.productInBasket.ElementAt(rowIndex).Value.inOrder = true;
+                    basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+                }
+                return;
+            }
             ProductInformationForm productInformation = new ProductInformationForm(basket.productInBasket.ElementAt(rowIndex).Value);
             productInformation.ShowDialog();
         }
@@ -511,8 +581,9 @@ namespace Store_kurs
         private void deleteFromBasket_btn_Click(object sender, EventArgs e)
         {
             int rowIndex;
-            int productID;
             int basketID;
+            if (basket.productInBasket.Count == 0)//если корзина пуста,то ничего не делаем
+                return;
             rowIndex = basket_dgv.CurrentCell.RowIndex;
             basketID = basket.productInBasket.ElementAt(rowIndex).Key;
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
@@ -520,12 +591,22 @@ namespace Store_kurs
             {
                 try
                 {
-                    DB.deleteProductFromBasketByBasketID(user.ID, basketID);
-                    MessageBox.Show("Product deleted from basket successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (basket.productInBasket.ElementAt(rowIndex).Value.count==1)//если число товаров в корзине равно одному,то удаляем полностью запись
+                    {
+                        DB.deleteProductFromBasketByBasketID(user.ID, basketID);
+                        MessageBox.Show("Product deleted from basket successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    DataSet dsBasket = DB.getBasketMaxInf(user.ID);//получаем данные о корзине
-                    updateBasket(dsBasket, basket);//заполняем поле словаря в корзине
-                    basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+                        DataSet dsBasket = DB.getBasketMaxInf(user.ID);//получаем данные о корзине
+                        basket.updateBasket(dsBasket);//заполняем поле словаря в корзине
+                        basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+                    }
+                    else//если число товаров больше 1,то меняем число товраом на -1
+                    {
+                        DB.changeCountProductInBasket(basketID, user.ID, -1);
+                        DataSet dsBasket = DB.getBasketMaxInf(user.ID);//получаем данные о корзине
+                        basket.updateBasket(dsBasket);//заполняем поле словаря в корзине
+                        basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+                    }
                 }
                 catch
                 {
@@ -541,14 +622,50 @@ namespace Store_kurs
 
         private void makeAnOrder_btn_Click(object sender, EventArgs e)
         {
-            if(basket_dgv.RowCount<=0)
+            Basket basketForOrder=new Basket(user.ID);
+            if(basket.productInBasket.Count<=0)
             {
                 MessageBox.Show("Basket is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                OrderForm orderForm = new OrderForm(basket);
-                orderForm.ShowDialog();
+                for(int i = 0; i < basket.productInBasket.Count; i++)
+                {
+                    if (basket.productInBasket.ElementAt(i).Value.inOrder)
+                    {
+                        basketForOrder.productInBasket.Add(basket.productInBasket.ElementAt(i).Key, basket.productInBasket.ElementAt(i).Value);//добавляем в переменную все товары из корзины,которые помечены как в заказ
+                    }
+                }
+                if (basketForOrder.productInBasket.Count != 0)
+                {
+                    OrderForm orderForm = new OrderForm(basketForOrder);
+                    orderForm.ShowDialog();
+                    if (orderForm.isChanged)
+                    {
+                        basket.clearBasket(user.ID);
+                        basket_bs.DataSource = basket.productInBasket.Select(x => x.Value);//устанавливаем данные в dgv о корзине
+                        DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
+                        if (DB.getConnection().State == ConnectionState.Open)//если подключились
+                        {
+                            try
+                            {
+                                DataSet dsOrder = DB.getAllOrders(user.ID);//получаем данные о заказах
+                                orders=updateOrders(dsOrder,DB);//заполняем информацию о заказах
+                                orders_bs.DataSource = orders;
+                            }
+
+                            catch
+                            {
+                                MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            DB.closeConnection();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Connection was not open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
             }
 
         }
@@ -556,10 +673,74 @@ namespace Store_kurs
         private void orders_dgv_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             int rowIndex;
-            int orderID;
+            if (orders.Count == 0)//если заказов нет,то ничего не происходит
+                return;
             rowIndex = orders_dgv.CurrentCell.RowIndex;
             OrderInformationForm orderInformation = new OrderInformationForm(orders[rowIndex]);
             orderInformation.ShowDialog();
+        }
+
+        private void exit_btn_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            AuthForm authForm = new AuthForm();
+            authForm.ShowDialog();
+            this.Close();
+        }
+
+        private void saveCompany_btn_Click(object sender, EventArgs e)
+        {
+            DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
+            if (DB.getConnection().State == ConnectionState.Open)//если подключились
+            {
+                try
+                {
+                    DB.saveCompany(administration.dsCompany);
+                    administration.getAllDataCompany(DB);
+                    company_bs.DataSource = administration.dsCompany.Tables["Company"];//заполняем биндинг соурс датасетами
+                    MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                 catch
+                {
+                    MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                DB.closeConnection();
+            }
+            else
+            {
+                MessageBox.Show("Connection was not open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void saveModel_btn_Click(object sender, EventArgs e)
+        {
+            DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
+            if (DB.getConnection().State == ConnectionState.Open)//если подключились
+            {
+                try
+                {
+                    DB.saveModel(administration.dsModel);
+                    administration.getAllDataModel(DB);
+                    model_bs.DataSource = administration.dsModel.Tables["Model"];//заполняем биндинг соурс датасетами
+                    MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                catch
+                {
+                    MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                DB.closeConnection();
+            }
+            else
+            {
+                MessageBox.Show("Connection was not open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void characteristic_btn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

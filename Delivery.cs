@@ -6,19 +6,24 @@ using System.Threading.Tasks;
 
 namespace Store_kurs
 {
-    class Delivery
+    public class Delivery
     {
         public int ID { get; set; }
         public int order { get; set; }
-        public String addres { get; set; }
+        public String address { get; set; }
         public String status { get; set; }
 
-        public Delivery(int ID,int order,String addres,String status)
+        public Delivery(int ID,int order,String address,String status)
         {
             this.ID = ID;
             this.order = order;
-            this.addres = addres;
+            this.address = address;
             this.status = status;
+        }
+
+        public Delivery()
+        {
+
         }
 
     }

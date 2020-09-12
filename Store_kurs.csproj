@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Administration.cs" />
     <Compile Include="AuthForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,6 +54,8 @@
       <DependentUpon>AuthForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Basket.cs" />
+    <Compile Include="Characteristic.cs" />
+    <Compile Include="Company.cs" />
     <Compile Include="DataBase.cs" />
     <Compile Include="Delivery.cs" />
     <Compile Include="MainForm.cs">
@@ -61,6 +64,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="OrderForm.cs">
       <SubType>Form</SubType>
@@ -76,12 +80,14 @@
     </Compile>
     <Compile Include="OrderProduct.cs" />
     <Compile Include="Product.cs" />
+    <Compile Include="ProductInBasket.cs" />
     <Compile Include="ProductInformationForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ProductInformationForm.Designer.cs">
       <DependentUpon>ProductInformationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ProductInOrder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegForm.cs">
@@ -118,8 +124,14 @@
     <EmbeddedResource Include="RegForm.resx">
       <DependentUpon>RegForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Properties\DataSources\Basket.datasource" />
+    <None Include="Properties\DataSources\Characteristic.datasource" />
+    <None Include="Properties\DataSources\Company.datasource" />
+    <None Include="Properties\DataSources\Model.datasource" />
     <None Include="Properties\DataSources\Order.datasource" />
     <None Include="Properties\DataSources\Product.datasource" />
+    <None Include="Properties\DataSources\ProductInBasket.datasource" />
+    <None Include="Properties\DataSources\ProductInOrder.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
