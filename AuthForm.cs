@@ -14,9 +14,11 @@ namespace Store_kurs
 {
     public partial class AuthForm : Form
     {
+        public ConnectionSettings connectionSettings;
         public AuthForm()
         {
             InitializeComponent();
+            connectionSettings = new ConnectionSettings();
         }
 
         private void login_btn_Click(object sender, EventArgs e)
@@ -74,6 +76,13 @@ namespace Store_kurs
             RegForm regForm = new RegForm();
             regForm.ShowDialog();
             this.Close();
+        }
+
+        private void connectionSettings_btn_Click(object sender, EventArgs e)
+        {
+            ConnectionSettingsForm connectionSettingsForm = new ConnectionSettingsForm();
+            connectionSettingsForm.ShowDialog();
+            this.connectionSettings = connectionSettingsForm.connectionSettings;
         }
     }
 }

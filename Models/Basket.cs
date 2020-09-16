@@ -13,7 +13,6 @@ namespace Store_kurs
         public int userID { get; set; }
         public Dictionary<int,ProductInBasket> productInBasket { get; set; }//ключ-id корзины
 
-
         public Basket(int userID)
         {
             productInBasket = new Dictionary<int, ProductInBasket>();

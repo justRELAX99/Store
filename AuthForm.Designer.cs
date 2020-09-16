@@ -34,6 +34,7 @@
             this.reg_btn = new System.Windows.Forms.Button();
             this.login_lbl = new System.Windows.Forms.Label();
             this.pass_lbl = new System.Windows.Forms.Label();
+            this.connectionSettings_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // login_tb
@@ -89,11 +90,22 @@
             this.pass_lbl.TabIndex = 5;
             this.pass_lbl.Text = "PASSWORD";
             // 
+            // connectionSettings_btn
+            // 
+            this.connectionSettings_btn.Location = new System.Drawing.Point(250, 151);
+            this.connectionSettings_btn.Name = "connectionSettings_btn";
+            this.connectionSettings_btn.Size = new System.Drawing.Size(122, 52);
+            this.connectionSettings_btn.TabIndex = 6;
+            this.connectionSettings_btn.Text = "CONNECTION SETTINGS";
+            this.connectionSettings_btn.UseVisualStyleBackColor = true;
+            this.connectionSettings_btn.Click += new System.EventHandler(this.connectionSettings_btn_Click);
+            // 
             // AuthForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 261);
+            this.Controls.Add(this.connectionSettings_btn);
             this.Controls.Add(this.pass_lbl);
             this.Controls.Add(this.login_lbl);
             this.Controls.Add(this.reg_btn);
@@ -117,5 +129,6 @@
         private System.Windows.Forms.Button reg_btn;
         private System.Windows.Forms.Label login_lbl;
         private System.Windows.Forms.Label pass_lbl;
+        private System.Windows.Forms.Button connectionSettings_btn;
     }
 }

@@ -13,13 +13,23 @@ namespace Store_kurs
     public class DataBase
     {
         private SqlConnection conn;
-        public DataBase()
+        public DataBase()//дефотные настройки
         {
             String dataSource = "DESKTOP-VRM1SLK\\SQLEXPRESS";
             String nameDataBase = "Store";
-            String userID = "sa";
+            String userName = "sa";
             String password = "123";
-            SqlConnection conn = connectToSql(dataSource, nameDataBase, userID, password);
+            SqlConnection conn = connectToSql(dataSource, nameDataBase, userName, password);
+            this.conn = conn;
+        }
+        public DataBase(String dataSource, String nameDataBase, String userName, String password)//те,которые задал пользователь
+        {
+            SqlConnection conn = connectToSql(dataSource, nameDataBase, userName, password);
+            this.conn = conn;
+        }
+        public DataBase(ConnectionSettings connectionSettings)//те,которые задал пользователь
+        {
+            SqlConnection conn = connectToSql(connectionSettings.dataSource, connectionSettings.nameDataBase, connectionSettings.userName, connectionSettings.password);
             this.conn = conn;
         }
 
@@ -145,7 +155,7 @@ namespace Store_kurs
         {
             SqlCommand cmdInsert = conn.CreateCommand();
             int role = 2;
-            cmdInsert.CommandText = "INSERT INTO [User]   (Role,Login,Password,Name,[Second name])" + '\n' +
+            cmdInsert.CommandText = "INSERT INTO [User]   (Role,Login,Password,Name,[Second_name])" + '\n' +
                                     "VALUES(@role,@login, @password,@name,@second_name)";
 
             cmdInsert.Parameters.AddWithValue("@role", role);
@@ -191,8 +201,8 @@ namespace Store_kurs
             SqlCommand cmdInsert = conn.CreateCommand();
 
             cmdInsert.CommandText = "UPDATE[User]" + '\n' +
-                                    "SET Login = @newLogin, Name = @newName,[Second name] = @newSecondName" + '\n' +
-                                    "WHERE Login = @oldLogin AND Name = @oldName AND[Second name] = @oldScondName";
+                                    "SET Login = @newLogin, Name = @newName,[Second_name] = @newSecondName" + '\n' +
+                                    "WHERE Login = @oldLogin AND Name = @oldName AND[Second_name] = @oldSecondName";
 
             cmdInsert.Parameters.AddWithValue("@newLogin", newLogin);
             cmdInsert.Parameters.AddWithValue("@newName", newName);
@@ -211,7 +221,7 @@ namespace Store_kurs
             int total = 0;
 
             SqlCommand cmdInsert = conn.CreateCommand();
-            cmdInsert.CommandText = "INSERT INTO SaleCard([User],[Discount percentage],Status,Total)" + '\n' +
+            cmdInsert.CommandText = "INSERT INTO SaleCard([User],[Discount_percentage],Status,Total)" + '\n' +
                                     "VALUES(@userID,@discountPercentage,@status,@total)";
 
             cmdInsert.Parameters.AddWithValue("@userID", userID);
@@ -867,37 +877,37 @@ namespace Store_kurs
                                     "WHERE ID = @ID AND Company = @company AND Characteristic = @characteristic AND Model = @model AND Price = @price";
 
             cmdUpdate.CommandText = "UPDATE dbo.Product" + '\n' +
-                                    "SET Company = @company , Model = @model , Price = @price" + '\n' +
+                                    "SET Company = @company , Characteristic = @characteristic,Model = @model , Price = @price" + '\n' +
                                     "WHERE ID = @ID";
 
             cmdInsert.Parameters.Add("@company", SqlDbType.Int);
-            cmdInsert.Parameters["@company"].SourceColumn = "Company";
+            cmdInsert.Parameters["@company"].SourceColumn = "companyID";
             cmdInsert.Parameters.Add("@characteristic", SqlDbType.Int);
-            cmdInsert.Parameters["@characteristic"].SourceColumn = "Characteristic";
+            cmdInsert.Parameters["@characteristic"].SourceColumn = "characteristicID";
             cmdInsert.Parameters.Add("@model", SqlDbType.Int);
-            cmdInsert.Parameters["@model"].SourceColumn = "Model";
+            cmdInsert.Parameters["@model"].SourceColumn = "modelID";
             cmdInsert.Parameters.Add("@price", SqlDbType.Int);
             cmdInsert.Parameters["@price"].SourceColumn = "Price";
 
             cmdDelete.Parameters.Add("@ID", SqlDbType.Int);
             cmdDelete.Parameters["@ID"].SourceColumn = "ID";
             cmdDelete.Parameters.Add("@company", SqlDbType.Int);
-            cmdDelete.Parameters["@company"].SourceColumn = "Company";
+            cmdDelete.Parameters["@company"].SourceColumn = "companyID";
             cmdDelete.Parameters.Add("@characteristic", SqlDbType.Int);
-            cmdDelete.Parameters["@characteristic"].SourceColumn = "Characteristic";
+            cmdDelete.Parameters["@characteristic"].SourceColumn = "characteristicID";
             cmdDelete.Parameters.Add("@model", SqlDbType.Int);
-            cmdDelete.Parameters["@model"].SourceColumn = "Model";
+            cmdDelete.Parameters["@model"].SourceColumn = "modelID";
             cmdDelete.Parameters.Add("@price", SqlDbType.Int);
             cmdDelete.Parameters["@price"].SourceColumn = "Price";
 
             cmdUpdate.Parameters.Add("@ID", SqlDbType.Int);
             cmdUpdate.Parameters["@ID"].SourceColumn = "ID";
             cmdUpdate.Parameters.Add("@company", SqlDbType.Int);
-            cmdUpdate.Parameters["@company"].SourceColumn = "Company";
+            cmdUpdate.Parameters["@company"].SourceColumn = "companyID";
             cmdUpdate.Parameters.Add("@characteristic", SqlDbType.Int);
-            cmdUpdate.Parameters["@characteristic"].SourceColumn = "Characteristic";
+            cmdUpdate.Parameters["@characteristic"].SourceColumn = "characteristicID";
             cmdUpdate.Parameters.Add("@model", SqlDbType.Int);
-            cmdUpdate.Parameters["@model"].SourceColumn = "Model";
+            cmdUpdate.Parameters["@model"].SourceColumn = "modelID";
             cmdUpdate.Parameters.Add("@price", SqlDbType.Int);
             cmdUpdate.Parameters["@price"].SourceColumn = "Price";
 
@@ -909,38 +919,6 @@ namespace Store_kurs
             da.Update(ds.Tables["Product"].Select(null, null, DataViewRowState.Added));
             da.Update(ds.Tables["Product"].Select(null, null, DataViewRowState.ModifiedCurrent));
             da.Update(ds.Tables["Product"].Select(null, null, DataViewRowState.Deleted));
-        }
-
-        public void saveProduct2(List<ProductForAdmin> productsForAdmin)//чисто чтоб работало
-        {
-            SqlDataAdapter da = new SqlDataAdapter();
-
-            SqlCommand cmdInsert = conn.CreateCommand();
-            SqlCommand cmdDelete = conn.CreateCommand();
-            SqlCommand cmdUpdate = conn.CreateCommand();
-
-
-            cmdInsert.CommandText = "INSERT INTO dbo.Product(Company,Characteristic,Model,Price)" + '\n' +
-                                    "VALUES(@company, @characteristic,@model,@price);";
-
-            cmdDelete.CommandText = "DELETE" + '\n' +
-                                    "FROM dbo.Product";
-
-            cmdUpdate.CommandText = "UPDATE dbo.Product" + '\n' +
-                                    "SET Company = @company , Model = @model , Price = @price" + '\n' +
-                                    "WHERE ID = @ID";
-
-            if (productsForAdmin.Count == 0)
-                return;
-            cmdDelete.ExecuteNonQuery();
-            for (int i = 0; i < productsForAdmin.Count; i++)
-            {
-                cmdInsert.Parameters.AddWithValue("@company", productsForAdmin[i].companyID);
-                cmdInsert.Parameters.AddWithValue("@characteristic", productsForAdmin[i].characteristicID);
-                cmdInsert.Parameters.AddWithValue("@model", productsForAdmin[i].modelID);
-                cmdInsert.Parameters.AddWithValue("@price", productsForAdmin[i].price);
-                cmdInsert.ExecuteNonQuery();
-            }
         }
     }
 }

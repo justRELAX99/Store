@@ -135,6 +135,13 @@ namespace Store_kurs
             this.dsRole = dsRole;
         }
 
+        public void setdsProductsForAdmin(DataBase DB)
+        {
+            DataSet dsProductsForAdmin;
+            dsProductForAdmin = DB.getProductForAdmin();
+            this.productsForAdmin = productsForAdmin;
+        }
+
         public void setAllDataFromDB(DataBase DB)//заполняет поля класса и DataSource
         {
             this.productsForAdmin = updateProductsForAdmin(DB);

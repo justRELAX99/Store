@@ -14,12 +14,11 @@ namespace Store_kurs
 {
     public partial class MainForm : Form
     {
-        public Administration administration=new Administration();
+        public Administration administration;
         public User user;
-        public List<Product> products = new List<Product>();
+        public List<Product> products;
         public Basket basket;
-        public List<Order> orders=new List<Order>();
-
+        public List<Order> orders;
         public MainForm(User user)
         {
             this.user = user;
@@ -33,7 +32,9 @@ namespace Store_kurs
             {
                 try
                 {
-
+                    administration = new Administration();
+                    products = new List<Product>();
+                    orders = new List<Order>();
                     DataSet dsSaleCard = DB.getSaleCardInfo(user.ID);//получаем данные о скидочной карте
 
                     DataSet dsProduct = DB.getProductMaxInf();//получаем данные о продукции
@@ -55,9 +56,10 @@ namespace Store_kurs
                     company_bs.DataSource = administration.dsCompany.Tables["Company"];//заполняем биндинг соурс датасетами
                     model_bs.DataSource = administration.dsModel.Tables["Model"];
                     characteristic_bs.DataSource = administration.dsCharacteristic.Tables["Characteristic"];
-                    productsForAdmin_bs.DataSource = administration.productsForAdmin;
+                    //productsForAdmin_bs.DataSource = administration.productsForAdmin;
                     user_bs.DataSource = administration.dsUser.Tables["User"];
-                    //productsForAdmin_bs.DataSource = administration.dsProductForAdmin.Tables["Product"];
+                    productsForAdmin_bs.DataSource = administration.dsProductForAdmin.Tables["Product"];
+                    productsForAdmin_dgv.CellValueChanged += productsForAdmin_dgv_CellValueChanged;
 
                     updateProductsForAdminDGV();//обновляем итемы в комбобоксах для датагрида productsForAdmin
                     var arrayRole = administration.dsRole.Tables["Role"].Rows.OfType<DataRow>().Select(x => x.ItemArray[0]).ToArray();//в датагриде юзерс поле роль можно выбирать только те,которые есть в таблице Role 
@@ -275,62 +277,58 @@ namespace Store_kurs
             {
                 try
                 {
-                    if (login.Length != 0)
+                    if (login.Length == 0)//если логин пустой,то выход
                     {
-                        exists = DB.checkLogin(login);
-
+                        MessageBox.Show("Invalid cell value : Login", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    if (login != user.login)//если логин изменился
+                    {
+                        exists = DB.checkLogin(login);//то проверяем наличие нового логина в бд
                         if (exists)//если есть такой пользователь с таким логином,выводим ошибку
                         {
                             MessageBox.Show("User with this login already exists", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        else
-                        {
-                            if (name.Length != 0)
-                            {
-                                if (secondName.Length != 0)
-                                {
-                                    DB.changeUserData(login, name, secondName,user.login,user.name,user.second_name);//меняем данные в бд
-                                    user.login = login;//меняем логин в классе
-                                    user.name = name;//меняем имя в классе
-                                    user.second_name = secondName;//меняем фамилию в классе
-
-                                    //cancel_btn_Click(sender, e);//потестить,тк код ниже делает то же самое,что и эта строчка(нажание кнопки Cancel)
-
-                                    login_tb.Text = login;//меняем логин в tabPage
-                                    login_tb.ReadOnly = true;
-
-                                    name_tb.Text = name;//меняем имя в tabPage
-                                    name_tb.ReadOnly = true;
-
-                                    secondName_tb.Text = secondName;//меняем фамилию в tabPage
-                                    secondName_tb.ReadOnly = true;
-
-                                    saveData_btn.Visible = false;
-                                    cancel_btn.Visible = false;
-                                    MessageBox.Show("User changed successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Invalid cell value : Second name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Invalid cell value : Name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            return;
                         }
                     }
-                    else
+                    if (name.Length == 0)
                     {
-                        MessageBox.Show("Invalid cell value : Login", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Invalid cell value : Name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
-                    
+
+                    if (secondName.Length == 0)
+                    {
+                        MessageBox.Show("Invalid cell value : Second name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    DB.changeUserData(login, name, secondName,user.login,user.name,user.second_name);//меняем данные в бд
+                    user.login = login;//меняем логин в классе
+                    user.name = name;//меняем имя в классе
+                    user.second_name = secondName;//меняем фамилию в классе
+
+                    //cancel_btn_Click(sender, e);//потестить,тк код ниже делает то же самое,что и эта строчка(нажание кнопки Cancel)
+
+                    login_tb.Text = login;//меняем логин в tabPage
+                    login_tb.ReadOnly = true;
+
+                    name_tb.Text = name;//меняем имя в tabPage
+                    name_tb.ReadOnly = true;
+
+                    secondName_tb.Text = secondName;//меняем фамилию в tabPage
+                    secondName_tb.ReadOnly = true;
+
+                    saveData_btn.Visible = false;
+                    cancel_btn.Visible = false;
+                    MessageBox.Show("User changed successfully", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 }
                 catch
                 {
                     MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                DB.closeConnection();
+            DB.closeConnection();
             }
             else
             {
@@ -500,8 +498,8 @@ namespace Store_kurs
             int productID;
             int basketID = 0;//если меняется на любое число,то данный товар уже есть в корзине под этим индексом
 
-            rowIndex = products_dgv.CurrentCell.RowIndex;
-            productID = products[rowIndex].ID;
+            rowIndex = products_dgv.CurrentCell.RowIndex;//получаем индекс выбранной строки
+            productID = products[rowIndex].ID;//находим в модели строку по такому индексу
 
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
@@ -573,7 +571,10 @@ namespace Store_kurs
             int rowIndex;
             int basketID;
             if (basket.productInBasket.Count == 0)//если корзина пуста,то ничего не делаем
+            {
+                MessageBox.Show("Basket is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
             rowIndex = basket_dgv.CurrentCell.RowIndex;
             basketID = basket.productInBasket.ElementAt(rowIndex).Key;
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
@@ -665,8 +666,8 @@ namespace Store_kurs
             int rowIndex;
             if (orders.Count == 0)//если заказов нет,то ничего не происходит
                 return;
-            rowIndex = orders_dgv.CurrentCell.RowIndex;
-            OrderInformationForm orderInformation = new OrderInformationForm(orders[rowIndex]);
+            rowIndex = orders_dgv.CurrentCell.RowIndex;//получаем индекс строки,куда произошел двойной клик
+            OrderInformationForm orderInformation = new OrderInformationForm(orders[rowIndex]);//передаем в форму заказ по данному индексу из модели
             orderInformation.ShowDialog();
         }
 
@@ -680,6 +681,15 @@ namespace Store_kurs
 
         private void saveCompany_btn_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < company_dgv.Rows.Count - 1; i++)//проверкао столбцов на пустоту
+            {
+                if (string.IsNullOrEmpty(company_dgv.Rows[i].Cells["nameDataGridViewTextBoxColumn1"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns name is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
             {
@@ -689,7 +699,7 @@ namespace Store_kurs
                     administration.setAllDataCompany(DB);
                     company_bs.DataSource = administration.dsCompany.Tables["Company"];//заполняем биндинг соурс датасетами
                     updateProductsForAdminDGV();
-                    MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Saving was successful", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                  catch
@@ -706,6 +716,15 @@ namespace Store_kurs
 
         private void saveModel_btn_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < model_dgv.Rows.Count - 1; i++)//проверкао столбцов на пустоту
+            {
+                if (string.IsNullOrEmpty(model_dgv.Rows[i].Cells["nameDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns model is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
             {
@@ -716,7 +735,7 @@ namespace Store_kurs
                     model_bs.DataSource = administration.dsModel.Tables["Model"];//заполняем биндинг соурс датасетами
 
                     updateProductsForAdminDGV();
-                    MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Saving was successful", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 catch
@@ -733,6 +752,39 @@ namespace Store_kurs
 
         private void characteristic_btn_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < characteristic_dgv.Rows.Count - 1; i++)//проверкао столбцов на пустоту
+            {
+                if (string.IsNullOrEmpty(characteristic_dgv.Rows[i].Cells["memoryDataGridViewTextBoxColumn2"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns memory is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(characteristic_dgv.Rows[i].Cells["frequencyDataGridViewTextBoxColumn2"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns frequency is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(characteristic_dgv.Rows[i].Cells["capacityDataGridViewTextBoxColumn2"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns capacity is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(characteristic_dgv.Rows[i].Cells["memorytypeDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns memory type is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(characteristic_dgv.Rows[i].Cells["maximumthroughputDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns maximum throughput is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(characteristic_dgv.Rows[i].Cells["interfaceDataGridViewTextBoxColumn2"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns interface is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
             {
@@ -742,7 +794,7 @@ namespace Store_kurs
                     administration.setAllDataCharacteristic(DB);//обнавляем данные в модели
                     characteristic_bs.DataSource = administration.dsCharacteristic.Tables["Characteristic"];//заполняем биндинг соурс датасетами
                     updateProductsForAdminDGV();
-                    MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Saving was successful", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 catch
@@ -761,9 +813,9 @@ namespace Store_kurs
         {
             TextBox tb = (TextBox)e.Control;
             int columnCell = characteristic_dgv.CurrentCell.ColumnIndex;
-
+            string nameCell = characteristic_dgv.Columns[columnCell].Name;
             tb.KeyPress -= new KeyPressEventHandler(tb_KeyPress);
-            if ((columnCell != 4) && (columnCell != 6))
+            if ((nameCell != "memorytypeDataGridViewTextBoxColumn") && (nameCell != "interfaceDataGridViewTextBoxColumn2"))//4-6
             {
                 tb.KeyPress += new KeyPressEventHandler(tb_KeyPress);
             }
@@ -799,55 +851,36 @@ namespace Store_kurs
             DataGridView dgv = sender as DataGridView;
             dgv.CellValidating += company_dgv_CellValidating;
         }
-
-        private void productsForAdmin_dgv_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            DataGridView dgv = sender as DataGridView;
-            if (dgv.CurrentCell.ColumnIndex == 1)
-            {
-                int companyID = (int)dgv.CurrentCell.Value;
-                List<string> companyData = new List<string>();
-                companyData = administration.getCompanyData(companyID);
-                if (companyData.Count == 0)
-                    return;
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].companyID = companyID;
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].company = companyData[0];
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].country = companyData[1];
-                dgv.Refresh();
-            }
-            if (dgv.CurrentCell.ColumnIndex == 4)
-            {
-                int characteristicID = (int)dgv.CurrentCell.Value;
-                List<string> characteristicData = new List<string>(); ;
-                characteristicData = administration.getCharacteristicData(characteristicID);
-                if (characteristicData.Count == 0)
-                    return;
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].characteristicID = characteristicID;
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].memory = int.Parse(characteristicData[0]);
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].frequency = int.Parse(characteristicData[1]);
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].capacity = int.Parse(characteristicData[2]);
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].memory_type = characteristicData[3];
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].maximum_throughput = int.Parse(characteristicData[4]);
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].Interface = characteristicData[5];
-                dgv.Refresh();
-            }
-            if (dgv.CurrentCell.ColumnIndex == 11)
-            {
-                int modelID = (int)dgv.CurrentCell.Value;
-                List<string> modelData = new List<string>(); ;
-                modelData = administration.getModelData(modelID);
-                if (modelData.Count == 0)
-                    return;
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].modelID = modelID;
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].model = modelData[0];
-                administration.productsForAdmin[dgv.CurrentCell.RowIndex].series = modelData[1];
-                dgv.Refresh();
-            }
-        }
-
-
         private void saveUsers_btn_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < users_dgv.Rows.Count - 1; i++)//проверкао столбцов на пустоту
+            {
+                if (string.IsNullOrEmpty(users_dgv.Rows[i].Cells["roleDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns role is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(users_dgv.Rows[i].Cells["loginDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns login is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(users_dgv.Rows[i].Cells["passwordDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns password is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(users_dgv.Rows[i].Cells["nameDataGridViewTextBoxColumn2"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns name is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(users_dgv.Rows[i].Cells["dataGridViewTextBoxColumn1"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns second name is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
             {
@@ -856,7 +889,7 @@ namespace Store_kurs
                     DB.saveUser(administration.dsUser);//сохраняем
                     administration.setAllDataUsers(DB);//обнавляем данные в модели
                     user_bs.DataSource = administration.dsUser.Tables["User"];//заполняем биндинг соурс датасетами
-                    MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Saving was successful", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 catch
@@ -873,32 +906,147 @@ namespace Store_kurs
 
         private void saveProducts_btn_Click(object sender, EventArgs e)
         {
-            //DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
-            //if (DB.getConnection().State == ConnectionState.Open)//если подключились
-            //{
-            //    try
-            //    {
-            //        DB.saveProduct(administration.dsProductForAdmin);//сохраняем
-            //        administration.setAllDataUsers(DB);//обнавляем данные в модели
-            //        user_bs.DataSource = administration.dsUser.Tables["User"];//заполняем биндинг соурс датасетами
-            //        MessageBox.Show("Saving was successful", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    }
+            for(int i = 0; i < productsForAdmin_dgv.Rows.Count-1; i++)//проверкао столбцов на пустоту
+            {
+                if (string.IsNullOrEmpty(productsForAdmin_dgv.Rows[i].Cells["companyIDDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns companyID is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(productsForAdmin_dgv.Rows[i].Cells["characteristicIDDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns characteristicID is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(productsForAdmin_dgv.Rows[i].Cells["modelIDDataGridViewTextBoxColumn"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns modelID is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (string.IsNullOrEmpty(productsForAdmin_dgv.Rows[i].Cells["priceDataGridViewTextBoxColumn2"].Value.ToString()))
+                {
+                    MessageBox.Show("One of the columns price is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
 
-            //    catch
-            //    {
-            //        MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //    DB.closeConnection();
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Connection was not open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
+            if (DB.getConnection().State == ConnectionState.Open)//если подключились
+            {
+                try
+                {
+                    DB.saveProduct(administration.dsProductForAdmin);//сохраняем
+                    administration.setdsProductsForAdmin(DB);//обнавляем данные в модели
+                    productsForAdmin_bs.DataSource = administration.dsProductForAdmin.Tables["Product"];//заполняем биндинг соурс датасетами
+                    MessageBox.Show("Saving was successful", "Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                catch
+                {
+                    MessageBox.Show("Runtime error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                DB.closeConnection();
+            }
+            else
+            {
+                MessageBox.Show("Connection was not open", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void productsForAdmin_dgv_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             //updateProductsForAdminDGV();
+        }
+
+        private void productsForAdmin_dgv_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridView dgv = sender as DataGridView;
+            if (dgv.CurrentCell.ColumnIndex == 1)
+            {
+                int companyID = (int)dgv.CurrentCell.Value;
+                List<string> companyData = new List<string>();
+                companyData = administration.getCompanyData(companyID);
+                if (companyData.Count == 0)
+                    return;
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["companyIDDataGridViewTextBoxColumn"].Value = companyID;
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["companyDataGridViewTextBoxColumn2"].Value = companyData[0];
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["countryDataGridViewTextBoxColumn2"].Value = companyData[1];
+                dgv.Refresh();
+            }
+            if (dgv.CurrentCell.ColumnIndex == 4)
+            {
+                int characteristicID = (int)dgv.CurrentCell.Value;
+                List<string> characteristicData = new List<string>(); ;
+                characteristicData = administration.getCharacteristicData(characteristicID);
+                if (characteristicData.Count == 0)
+                    return;
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["characteristicIDDataGridViewTextBoxColumn"].Value = characteristicID;
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["memoryDataGridViewTextBoxColumn3"].Value = int.Parse(characteristicData[0]);
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["frequencyDataGridViewTextBoxColumn3"].Value = int.Parse(characteristicData[1]);
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["capacityDataGridViewTextBoxColumn3"].Value = int.Parse(characteristicData[2]);
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["memorytypeDataGridViewTextBoxColumn1"].Value = characteristicData[3];
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["maximumthroughputDataGridViewTextBoxColumn1"].Value = int.Parse(characteristicData[4]);
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["interfaceDataGridViewTextBoxColumn3"].Value = characteristicData[5];
+                dgv.Refresh();
+            }
+            if (dgv.CurrentCell.ColumnIndex == 11)
+            {
+                int modelID = (int)dgv.CurrentCell.Value;
+                List<string> modelData = new List<string>(); ;
+                modelData = administration.getModelData(modelID);
+                if (modelData.Count == 0)
+                    return;
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["modelIDDataGridViewTextBoxColumn"].Value = modelID; 
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["modelDataGridViewTextBoxColumn2"].Value = modelData[0];
+                productsForAdmin_dgv.Rows[dgv.CurrentCell.RowIndex].Cells["seriesDataGridViewTextBoxColumn3"].Value = modelData[1];
+                dgv.Refresh();
+            }
+        }
+
+        private void productsForAdmin_dgv_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)//запись только цифр в price
+        {
+            try
+            {
+                TextBox tb = (TextBox)e.Control;
+                int columnCell = productsForAdmin_dgv.CurrentCell.ColumnIndex;
+                string nameCell = productsForAdmin_dgv.Columns[columnCell].Name;
+                tb.KeyPress -= new KeyPressEventHandler(tb_KeyPress);
+                if (nameCell == "priceDataGridViewTextBoxColumn2")
+                {
+                    tb.KeyPress += new KeyPressEventHandler(tb_KeyPress);
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void oldPassword_tb_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (int)Keys.Space)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void users_dgv_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            try
+            {
+                TextBox tb = (TextBox)e.Control;
+                int columnCell = users_dgv.CurrentCell.ColumnIndex;
+                string nameCell = users_dgv.Columns[columnCell].Name;
+                tb.KeyPress -= new KeyPressEventHandler(tb_KeyPress);
+                if (nameCell == "passwordDataGridViewTextBoxColumn")
+                {
+                    tb.KeyPress += new KeyPressEventHandler(oldPassword_tb_KeyPress);
+                }
+            }
+            catch
+            {
+
+            }
         }
     }
 }
