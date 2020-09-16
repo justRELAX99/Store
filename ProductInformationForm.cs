@@ -23,8 +23,8 @@ namespace Store_kurs
             memory_tb.Text = product.memory.ToString();
             frequency_tb.Text = product.frequency.ToString();
             capacity_tb.Text = product.capacity.ToString();
-            memoryType_tb.Text = product.memoryType;
-            maxThroughput_tb.Text = product.maximumThroughput.ToString();
+            memoryType_tb.Text = product.memory_type;
+            maxThroughput_tb.Text = product.maximum_throughput.ToString();
             interface_tb.Text = product.Interface;
             price_tb.Text= product.price.ToString();                    
         }

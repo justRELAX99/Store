@@ -54,6 +54,8 @@
             this.login_lbl = new System.Windows.Forms.Label();
             this.login_tb = new System.Windows.Forms.TextBox();
             this.products_tp = new System.Windows.Forms.TabPage();
+            this.saveProducts_btn = new System.Windows.Forms.Button();
+            this.productsForAdmin_dgv = new System.Windows.Forms.DataGridView();
             this.addToBasket_btn = new System.Windows.Forms.Button();
             this.products_dgv = new System.Windows.Forms.DataGridView();
             this.basket_tp = new System.Windows.Forms.TabPage();
@@ -70,7 +72,14 @@
             this.saveModel_btn = new System.Windows.Forms.Button();
             this.characteristic_tp = new System.Windows.Forms.TabPage();
             this.characteristic_dgv = new System.Windows.Forms.DataGridView();
-            this.characteristic_btn = new System.Windows.Forms.Button();
+            this.saveCharacteristic_btn = new System.Windows.Forms.Button();
+            this.users_tp = new System.Windows.Forms.TabPage();
+            this.users_dgv = new System.Windows.Forms.DataGridView();
+            this.saveUsers_btn = new System.Windows.Forms.Button();
+            this.saleCard_tp = new System.Windows.Forms.TabPage();
+            this.saleCard_dgv = new System.Windows.Forms.DataGridView();
+            this.saleCard_btn = new System.Windows.Forms.Button();
+            this.productsForAdmin_bs = new System.Windows.Forms.BindingSource(this.components);
             this.iDDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.countryDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.companyDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -79,8 +88,6 @@
             this.memoryDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.frequencyDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.capacityDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.memoryTypeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.maximumThroughputDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.interfaceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.products_bs = new System.Windows.Forms.BindingSource(this.components);
@@ -92,8 +99,6 @@
             this.memoryDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.frequencyDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.capacityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.memoryTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.maximumThroughputDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.interfaceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -116,13 +121,43 @@
             this.memoryDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.frequencyDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.capacityDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.memoryTypeDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.maximumThroughputDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.memorytypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maximumthroughputDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.interfaceDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.characteristic_bs = new System.Windows.Forms.BindingSource(this.components);
+            this.iDDataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.roleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.loginDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.passwordDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.user_bs = new System.Windows.Forms.BindingSource(this.components);
+            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.iDDataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.companyIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.countryDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.companyDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.characteristicIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.memoryDataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.frequencyDataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.capacityDataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.memorytypeDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maximumthroughputDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.interfaceDataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.modelIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.modelDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.seriesDataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.priceDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.store_tc.SuspendLayout();
             this.userInfo_tp.SuspendLayout();
             this.products_tp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.productsForAdmin_dgv)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.products_dgv)).BeginInit();
             this.basket_tp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.basket_dgv)).BeginInit();
@@ -134,12 +169,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.model_dgv)).BeginInit();
             this.characteristic_tp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.characteristic_dgv)).BeginInit();
+            this.users_tp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.users_dgv)).BeginInit();
+            this.saleCard_tp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.saleCard_dgv)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productsForAdmin_bs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.products_bs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.basket_bs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.orders_bs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.company_bs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.model_bs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.characteristic_bs)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.user_bs)).BeginInit();
             this.SuspendLayout();
             // 
             // store_tc
@@ -151,6 +192,8 @@
             this.store_tc.Controls.Add(this.company_tp);
             this.store_tc.Controls.Add(this.model_tp);
             this.store_tc.Controls.Add(this.characteristic_tp);
+            this.store_tc.Controls.Add(this.users_tp);
+            this.store_tc.Controls.Add(this.saleCard_tp);
             this.store_tc.Location = new System.Drawing.Point(12, 12);
             this.store_tc.Name = "store_tc";
             this.store_tc.SelectedIndex = 0;
@@ -398,6 +441,8 @@
             // 
             // products_tp
             // 
+            this.products_tp.Controls.Add(this.saveProducts_btn);
+            this.products_tp.Controls.Add(this.productsForAdmin_dgv);
             this.products_tp.Controls.Add(this.addToBasket_btn);
             this.products_tp.Controls.Add(this.products_dgv);
             this.products_tp.Location = new System.Drawing.Point(4, 22);
@@ -407,6 +452,47 @@
             this.products_tp.TabIndex = 1;
             this.products_tp.Text = "Products";
             this.products_tp.UseVisualStyleBackColor = true;
+            // 
+            // saveProducts_btn
+            // 
+            this.saveProducts_btn.Location = new System.Drawing.Point(6, 229);
+            this.saveProducts_btn.Name = "saveProducts_btn";
+            this.saveProducts_btn.Size = new System.Drawing.Size(75, 23);
+            this.saveProducts_btn.TabIndex = 5;
+            this.saveProducts_btn.Text = "SAVE";
+            this.saveProducts_btn.UseVisualStyleBackColor = true;
+            this.saveProducts_btn.Click += new System.EventHandler(this.saveProducts_btn_Click);
+            // 
+            // productsForAdmin_dgv
+            // 
+            this.productsForAdmin_dgv.AllowUserToResizeColumns = false;
+            this.productsForAdmin_dgv.AllowUserToResizeRows = false;
+            this.productsForAdmin_dgv.AutoGenerateColumns = false;
+            this.productsForAdmin_dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.productsForAdmin_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.productsForAdmin_dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.iDDataGridViewTextBoxColumn6,
+            this.companyIDDataGridViewTextBoxColumn,
+            this.countryDataGridViewTextBoxColumn2,
+            this.companyDataGridViewTextBoxColumn2,
+            this.characteristicIDDataGridViewTextBoxColumn,
+            this.memoryDataGridViewTextBoxColumn3,
+            this.frequencyDataGridViewTextBoxColumn3,
+            this.capacityDataGridViewTextBoxColumn3,
+            this.memorytypeDataGridViewTextBoxColumn1,
+            this.maximumthroughputDataGridViewTextBoxColumn1,
+            this.interfaceDataGridViewTextBoxColumn3,
+            this.modelIDDataGridViewTextBoxColumn,
+            this.modelDataGridViewTextBoxColumn2,
+            this.seriesDataGridViewTextBoxColumn3,
+            this.priceDataGridViewTextBoxColumn2});
+            this.productsForAdmin_dgv.DataSource = this.productsForAdmin_bs;
+            this.productsForAdmin_dgv.Location = new System.Drawing.Point(6, 258);
+            this.productsForAdmin_dgv.Name = "productsForAdmin_dgv";
+            this.productsForAdmin_dgv.Size = new System.Drawing.Size(740, 247);
+            this.productsForAdmin_dgv.TabIndex = 2;
+            this.productsForAdmin_dgv.CurrentCellDirtyStateChanged += new System.EventHandler(this.productsForAdmin_dgv_CurrentCellDirtyStateChanged);
+            this.productsForAdmin_dgv.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.productsForAdmin_dgv_DataError);
             // 
             // addToBasket_btn
             // 
@@ -436,8 +522,6 @@
             this.memoryDataGridViewTextBoxColumn1,
             this.frequencyDataGridViewTextBoxColumn1,
             this.capacityDataGridViewTextBoxColumn1,
-            this.memoryTypeDataGridViewTextBoxColumn1,
-            this.maximumThroughputDataGridViewTextBoxColumn1,
             this.interfaceDataGridViewTextBoxColumn1,
             this.priceDataGridViewTextBoxColumn1});
             this.products_dgv.DataSource = this.products_bs;
@@ -445,7 +529,7 @@
             this.products_dgv.Name = "products_dgv";
             this.products_dgv.ReadOnly = true;
             this.products_dgv.RowHeadersVisible = false;
-            this.products_dgv.Size = new System.Drawing.Size(740, 150);
+            this.products_dgv.Size = new System.Drawing.Size(740, 217);
             this.products_dgv.TabIndex = 0;
             this.products_dgv.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.products_dgv_CellMouseDoubleClick);
             // 
@@ -500,8 +584,6 @@
             this.memoryDataGridViewTextBoxColumn,
             this.frequencyDataGridViewTextBoxColumn,
             this.capacityDataGridViewTextBoxColumn,
-            this.memoryTypeDataGridViewTextBoxColumn,
-            this.maximumThroughputDataGridViewTextBoxColumn,
             this.interfaceDataGridViewTextBoxColumn,
             this.priceDataGridViewTextBoxColumn,
             this.countDataGridViewTextBoxColumn,
@@ -577,6 +659,8 @@
             this.company_dgv.Name = "company_dgv";
             this.company_dgv.Size = new System.Drawing.Size(740, 144);
             this.company_dgv.TabIndex = 5;
+            this.company_dgv.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.company_dgv_CellBeginEdit);
+            this.company_dgv.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.company_dgv_CellEndEdit);
             // 
             // saveCompany_btn
             // 
@@ -616,6 +700,8 @@
             this.model_dgv.Name = "model_dgv";
             this.model_dgv.Size = new System.Drawing.Size(740, 144);
             this.model_dgv.TabIndex = 7;
+            this.model_dgv.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.company_dgv_CellBeginEdit);
+            this.model_dgv.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.company_dgv_CellEndEdit);
             // 
             // saveModel_btn
             // 
@@ -630,7 +716,7 @@
             // characteristic_tp
             // 
             this.characteristic_tp.Controls.Add(this.characteristic_dgv);
-            this.characteristic_tp.Controls.Add(this.characteristic_btn);
+            this.characteristic_tp.Controls.Add(this.saveCharacteristic_btn);
             this.characteristic_tp.Location = new System.Drawing.Point(4, 22);
             this.characteristic_tp.Name = "characteristic_tp";
             this.characteristic_tp.Padding = new System.Windows.Forms.Padding(3);
@@ -651,24 +737,116 @@
             this.memoryDataGridViewTextBoxColumn2,
             this.frequencyDataGridViewTextBoxColumn2,
             this.capacityDataGridViewTextBoxColumn2,
-            this.memoryTypeDataGridViewTextBoxColumn2,
-            this.maximumThroughputDataGridViewTextBoxColumn2,
+            this.memorytypeDataGridViewTextBoxColumn,
+            this.maximumthroughputDataGridViewTextBoxColumn,
             this.interfaceDataGridViewTextBoxColumn2});
             this.characteristic_dgv.DataSource = this.characteristic_bs;
             this.characteristic_dgv.Location = new System.Drawing.Point(6, 6);
             this.characteristic_dgv.Name = "characteristic_dgv";
             this.characteristic_dgv.Size = new System.Drawing.Size(740, 144);
             this.characteristic_dgv.TabIndex = 9;
+            this.characteristic_dgv.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.company_dgv_CellBeginEdit);
+            this.characteristic_dgv.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.company_dgv_CellEndEdit);
+            this.characteristic_dgv.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.characteristic_dgv_EditingControlShowing);
             // 
-            // characteristic_btn
+            // saveCharacteristic_btn
             // 
-            this.characteristic_btn.Location = new System.Drawing.Point(6, 162);
-            this.characteristic_btn.Name = "characteristic_btn";
-            this.characteristic_btn.Size = new System.Drawing.Size(75, 23);
-            this.characteristic_btn.TabIndex = 8;
-            this.characteristic_btn.Text = "SAVE";
-            this.characteristic_btn.UseVisualStyleBackColor = true;
-            this.characteristic_btn.Click += new System.EventHandler(this.characteristic_btn_Click);
+            this.saveCharacteristic_btn.Location = new System.Drawing.Point(6, 162);
+            this.saveCharacteristic_btn.Name = "saveCharacteristic_btn";
+            this.saveCharacteristic_btn.Size = new System.Drawing.Size(75, 23);
+            this.saveCharacteristic_btn.TabIndex = 8;
+            this.saveCharacteristic_btn.Text = "SAVE";
+            this.saveCharacteristic_btn.UseVisualStyleBackColor = true;
+            this.saveCharacteristic_btn.Click += new System.EventHandler(this.characteristic_btn_Click);
+            // 
+            // users_tp
+            // 
+            this.users_tp.Controls.Add(this.users_dgv);
+            this.users_tp.Controls.Add(this.saveUsers_btn);
+            this.users_tp.Location = new System.Drawing.Point(4, 22);
+            this.users_tp.Name = "users_tp";
+            this.users_tp.Padding = new System.Windows.Forms.Padding(3);
+            this.users_tp.Size = new System.Drawing.Size(752, 511);
+            this.users_tp.TabIndex = 7;
+            this.users_tp.Text = "Users";
+            this.users_tp.UseVisualStyleBackColor = true;
+            // 
+            // users_dgv
+            // 
+            this.users_dgv.AllowUserToResizeColumns = false;
+            this.users_dgv.AllowUserToResizeRows = false;
+            this.users_dgv.AutoGenerateColumns = false;
+            this.users_dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.users_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.users_dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.iDDataGridViewTextBoxColumn7,
+            this.roleDataGridViewTextBoxColumn,
+            this.loginDataGridViewTextBoxColumn,
+            this.passwordDataGridViewTextBoxColumn,
+            this.nameDataGridViewTextBoxColumn2,
+            this.dataGridViewTextBoxColumn1});
+            this.users_dgv.DataSource = this.user_bs;
+            this.users_dgv.Location = new System.Drawing.Point(6, 6);
+            this.users_dgv.Name = "users_dgv";
+            this.users_dgv.Size = new System.Drawing.Size(740, 144);
+            this.users_dgv.TabIndex = 11;
+            // 
+            // saveUsers_btn
+            // 
+            this.saveUsers_btn.Location = new System.Drawing.Point(6, 162);
+            this.saveUsers_btn.Name = "saveUsers_btn";
+            this.saveUsers_btn.Size = new System.Drawing.Size(75, 23);
+            this.saveUsers_btn.TabIndex = 10;
+            this.saveUsers_btn.Text = "SAVE";
+            this.saveUsers_btn.UseVisualStyleBackColor = true;
+            this.saveUsers_btn.Click += new System.EventHandler(this.saveUsers_btn_Click);
+            // 
+            // saleCard_tp
+            // 
+            this.saleCard_tp.Controls.Add(this.saleCard_dgv);
+            this.saleCard_tp.Controls.Add(this.saleCard_btn);
+            this.saleCard_tp.Location = new System.Drawing.Point(4, 22);
+            this.saleCard_tp.Name = "saleCard_tp";
+            this.saleCard_tp.Padding = new System.Windows.Forms.Padding(3);
+            this.saleCard_tp.Size = new System.Drawing.Size(752, 511);
+            this.saleCard_tp.TabIndex = 8;
+            this.saleCard_tp.Text = "Sale card";
+            this.saleCard_tp.UseVisualStyleBackColor = true;
+            // 
+            // saleCard_dgv
+            // 
+            this.saleCard_dgv.AllowUserToResizeColumns = false;
+            this.saleCard_dgv.AllowUserToResizeRows = false;
+            this.saleCard_dgv.AutoGenerateColumns = false;
+            this.saleCard_dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.saleCard_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.saleCard_dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn8,
+            this.dataGridViewTextBoxColumn9,
+            this.dataGridViewTextBoxColumn10,
+            this.dataGridViewTextBoxColumn11,
+            this.dataGridViewTextBoxColumn12,
+            this.dataGridViewTextBoxColumn13,
+            this.dataGridViewTextBoxColumn14});
+            this.saleCard_dgv.DataSource = this.characteristic_bs;
+            this.saleCard_dgv.Location = new System.Drawing.Point(6, 6);
+            this.saleCard_dgv.Name = "saleCard_dgv";
+            this.saleCard_dgv.Size = new System.Drawing.Size(740, 144);
+            this.saleCard_dgv.TabIndex = 11;
+            // 
+            // saleCard_btn
+            // 
+            this.saleCard_btn.Location = new System.Drawing.Point(6, 162);
+            this.saleCard_btn.Name = "saleCard_btn";
+            this.saleCard_btn.Size = new System.Drawing.Size(75, 23);
+            this.saleCard_btn.TabIndex = 10;
+            this.saleCard_btn.Text = "SAVE";
+            this.saleCard_btn.UseVisualStyleBackColor = true;
+            // 
+            // productsForAdmin_bs
+            // 
+            this.productsForAdmin_bs.AllowNew = true;
+            this.productsForAdmin_bs.DataSource = typeof(Store_kurs.ProductForAdmin);
             // 
             // iDDataGridViewTextBoxColumn1
             // 
@@ -729,22 +907,6 @@
             this.capacityDataGridViewTextBoxColumn1.Name = "capacityDataGridViewTextBoxColumn1";
             this.capacityDataGridViewTextBoxColumn1.ReadOnly = true;
             this.capacityDataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // memoryTypeDataGridViewTextBoxColumn1
-            // 
-            this.memoryTypeDataGridViewTextBoxColumn1.DataPropertyName = "memoryType";
-            this.memoryTypeDataGridViewTextBoxColumn1.HeaderText = "memoryType";
-            this.memoryTypeDataGridViewTextBoxColumn1.Name = "memoryTypeDataGridViewTextBoxColumn1";
-            this.memoryTypeDataGridViewTextBoxColumn1.ReadOnly = true;
-            this.memoryTypeDataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // maximumThroughputDataGridViewTextBoxColumn1
-            // 
-            this.maximumThroughputDataGridViewTextBoxColumn1.DataPropertyName = "maximumThroughput";
-            this.maximumThroughputDataGridViewTextBoxColumn1.HeaderText = "maximumThroughput";
-            this.maximumThroughputDataGridViewTextBoxColumn1.Name = "maximumThroughputDataGridViewTextBoxColumn1";
-            this.maximumThroughputDataGridViewTextBoxColumn1.ReadOnly = true;
-            this.maximumThroughputDataGridViewTextBoxColumn1.Visible = false;
             // 
             // interfaceDataGridViewTextBoxColumn1
             // 
@@ -824,22 +986,6 @@
             this.capacityDataGridViewTextBoxColumn.Name = "capacityDataGridViewTextBoxColumn";
             this.capacityDataGridViewTextBoxColumn.ReadOnly = true;
             this.capacityDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // memoryTypeDataGridViewTextBoxColumn
-            // 
-            this.memoryTypeDataGridViewTextBoxColumn.DataPropertyName = "memoryType";
-            this.memoryTypeDataGridViewTextBoxColumn.HeaderText = "memoryType";
-            this.memoryTypeDataGridViewTextBoxColumn.Name = "memoryTypeDataGridViewTextBoxColumn";
-            this.memoryTypeDataGridViewTextBoxColumn.ReadOnly = true;
-            this.memoryTypeDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // maximumThroughputDataGridViewTextBoxColumn
-            // 
-            this.maximumThroughputDataGridViewTextBoxColumn.DataPropertyName = "maximumThroughput";
-            this.maximumThroughputDataGridViewTextBoxColumn.HeaderText = "maximumThroughput";
-            this.maximumThroughputDataGridViewTextBoxColumn.Name = "maximumThroughputDataGridViewTextBoxColumn";
-            this.maximumThroughputDataGridViewTextBoxColumn.ReadOnly = true;
-            this.maximumThroughputDataGridViewTextBoxColumn.Visible = false;
             // 
             // interfaceDataGridViewTextBoxColumn
             // 
@@ -930,6 +1076,7 @@
             // 
             // company_bs
             // 
+            this.company_bs.AllowNew = true;
             this.company_bs.DataSource = typeof(Store_kurs.Company);
             // 
             // iDDataGridViewTextBoxColumn3
@@ -953,7 +1100,7 @@
             // 
             // model_bs
             // 
-            this.model_bs.AllowNew = false;
+            this.model_bs.AllowNew = true;
             this.model_bs.DataSource = typeof(Store_kurs.Model);
             // 
             // iDDataGridViewTextBoxColumn5
@@ -981,17 +1128,17 @@
             this.capacityDataGridViewTextBoxColumn2.HeaderText = "capacity";
             this.capacityDataGridViewTextBoxColumn2.Name = "capacityDataGridViewTextBoxColumn2";
             // 
-            // memoryTypeDataGridViewTextBoxColumn2
+            // memorytypeDataGridViewTextBoxColumn
             // 
-            this.memoryTypeDataGridViewTextBoxColumn2.DataPropertyName = "memoryType";
-            this.memoryTypeDataGridViewTextBoxColumn2.HeaderText = "memoryType";
-            this.memoryTypeDataGridViewTextBoxColumn2.Name = "memoryTypeDataGridViewTextBoxColumn2";
+            this.memorytypeDataGridViewTextBoxColumn.DataPropertyName = "memory_type";
+            this.memorytypeDataGridViewTextBoxColumn.HeaderText = "memory_type";
+            this.memorytypeDataGridViewTextBoxColumn.Name = "memorytypeDataGridViewTextBoxColumn";
             // 
-            // maximumThroughputDataGridViewTextBoxColumn2
+            // maximumthroughputDataGridViewTextBoxColumn
             // 
-            this.maximumThroughputDataGridViewTextBoxColumn2.DataPropertyName = "maximumThroughput";
-            this.maximumThroughputDataGridViewTextBoxColumn2.HeaderText = "maximumThroughput";
-            this.maximumThroughputDataGridViewTextBoxColumn2.Name = "maximumThroughputDataGridViewTextBoxColumn2";
+            this.maximumthroughputDataGridViewTextBoxColumn.DataPropertyName = "maximum_throughput";
+            this.maximumthroughputDataGridViewTextBoxColumn.HeaderText = "maximum_throughput";
+            this.maximumthroughputDataGridViewTextBoxColumn.Name = "maximumthroughputDataGridViewTextBoxColumn";
             // 
             // interfaceDataGridViewTextBoxColumn2
             // 
@@ -1003,6 +1150,201 @@
             // 
             this.characteristic_bs.AllowNew = true;
             this.characteristic_bs.DataSource = typeof(Store_kurs.Characteristic);
+            // 
+            // iDDataGridViewTextBoxColumn7
+            // 
+            this.iDDataGridViewTextBoxColumn7.DataPropertyName = "ID";
+            this.iDDataGridViewTextBoxColumn7.HeaderText = "ID";
+            this.iDDataGridViewTextBoxColumn7.Name = "iDDataGridViewTextBoxColumn7";
+            this.iDDataGridViewTextBoxColumn7.Visible = false;
+            // 
+            // roleDataGridViewTextBoxColumn
+            // 
+            this.roleDataGridViewTextBoxColumn.DataPropertyName = "role";
+            this.roleDataGridViewTextBoxColumn.HeaderText = "role";
+            this.roleDataGridViewTextBoxColumn.Name = "roleDataGridViewTextBoxColumn";
+            this.roleDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.roleDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // loginDataGridViewTextBoxColumn
+            // 
+            this.loginDataGridViewTextBoxColumn.DataPropertyName = "login";
+            this.loginDataGridViewTextBoxColumn.HeaderText = "login";
+            this.loginDataGridViewTextBoxColumn.Name = "loginDataGridViewTextBoxColumn";
+            // 
+            // passwordDataGridViewTextBoxColumn
+            // 
+            this.passwordDataGridViewTextBoxColumn.DataPropertyName = "password";
+            this.passwordDataGridViewTextBoxColumn.HeaderText = "password";
+            this.passwordDataGridViewTextBoxColumn.Name = "passwordDataGridViewTextBoxColumn";
+            // 
+            // nameDataGridViewTextBoxColumn2
+            // 
+            this.nameDataGridViewTextBoxColumn2.DataPropertyName = "name";
+            this.nameDataGridViewTextBoxColumn2.HeaderText = "name";
+            this.nameDataGridViewTextBoxColumn2.Name = "nameDataGridViewTextBoxColumn2";
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "second_name";
+            this.dataGridViewTextBoxColumn1.HeaderText = "second_name";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            // 
+            // user_bs
+            // 
+            this.user_bs.DataSource = typeof(Store_kurs.User);
+            // 
+            // dataGridViewTextBoxColumn8
+            // 
+            this.dataGridViewTextBoxColumn8.DataPropertyName = "ID";
+            this.dataGridViewTextBoxColumn8.HeaderText = "ID";
+            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            this.dataGridViewTextBoxColumn8.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn9
+            // 
+            this.dataGridViewTextBoxColumn9.DataPropertyName = "memory";
+            this.dataGridViewTextBoxColumn9.HeaderText = "memory";
+            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            // 
+            // dataGridViewTextBoxColumn10
+            // 
+            this.dataGridViewTextBoxColumn10.DataPropertyName = "frequency";
+            this.dataGridViewTextBoxColumn10.HeaderText = "frequency";
+            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            // 
+            // dataGridViewTextBoxColumn11
+            // 
+            this.dataGridViewTextBoxColumn11.DataPropertyName = "capacity";
+            this.dataGridViewTextBoxColumn11.HeaderText = "capacity";
+            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
+            // 
+            // dataGridViewTextBoxColumn12
+            // 
+            this.dataGridViewTextBoxColumn12.DataPropertyName = "memory_type";
+            this.dataGridViewTextBoxColumn12.HeaderText = "memory_type";
+            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
+            // 
+            // dataGridViewTextBoxColumn13
+            // 
+            this.dataGridViewTextBoxColumn13.DataPropertyName = "maximum_throughput";
+            this.dataGridViewTextBoxColumn13.HeaderText = "maximum_throughput";
+            this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
+            // 
+            // dataGridViewTextBoxColumn14
+            // 
+            this.dataGridViewTextBoxColumn14.DataPropertyName = "Interface";
+            this.dataGridViewTextBoxColumn14.HeaderText = "Interface";
+            this.dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
+            // 
+            // iDDataGridViewTextBoxColumn6
+            // 
+            this.iDDataGridViewTextBoxColumn6.DataPropertyName = "ID";
+            this.iDDataGridViewTextBoxColumn6.HeaderText = "ID";
+            this.iDDataGridViewTextBoxColumn6.Name = "iDDataGridViewTextBoxColumn6";
+            this.iDDataGridViewTextBoxColumn6.ReadOnly = true;
+            // 
+            // companyIDDataGridViewTextBoxColumn
+            // 
+            this.companyIDDataGridViewTextBoxColumn.DataPropertyName = "companyID";
+            this.companyIDDataGridViewTextBoxColumn.HeaderText = "companyID";
+            this.companyIDDataGridViewTextBoxColumn.Name = "companyIDDataGridViewTextBoxColumn";
+            this.companyIDDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.companyIDDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // countryDataGridViewTextBoxColumn2
+            // 
+            this.countryDataGridViewTextBoxColumn2.DataPropertyName = "country";
+            this.countryDataGridViewTextBoxColumn2.HeaderText = "country";
+            this.countryDataGridViewTextBoxColumn2.Name = "countryDataGridViewTextBoxColumn2";
+            this.countryDataGridViewTextBoxColumn2.ReadOnly = true;
+            this.countryDataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // companyDataGridViewTextBoxColumn2
+            // 
+            this.companyDataGridViewTextBoxColumn2.DataPropertyName = "company";
+            this.companyDataGridViewTextBoxColumn2.HeaderText = "company";
+            this.companyDataGridViewTextBoxColumn2.Name = "companyDataGridViewTextBoxColumn2";
+            this.companyDataGridViewTextBoxColumn2.ReadOnly = true;
+            this.companyDataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // characteristicIDDataGridViewTextBoxColumn
+            // 
+            this.characteristicIDDataGridViewTextBoxColumn.DataPropertyName = "characteristicID";
+            this.characteristicIDDataGridViewTextBoxColumn.HeaderText = "characteristicID";
+            this.characteristicIDDataGridViewTextBoxColumn.Name = "characteristicIDDataGridViewTextBoxColumn";
+            this.characteristicIDDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.characteristicIDDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // memoryDataGridViewTextBoxColumn3
+            // 
+            this.memoryDataGridViewTextBoxColumn3.DataPropertyName = "memory";
+            this.memoryDataGridViewTextBoxColumn3.HeaderText = "memory";
+            this.memoryDataGridViewTextBoxColumn3.Name = "memoryDataGridViewTextBoxColumn3";
+            this.memoryDataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // frequencyDataGridViewTextBoxColumn3
+            // 
+            this.frequencyDataGridViewTextBoxColumn3.DataPropertyName = "frequency";
+            this.frequencyDataGridViewTextBoxColumn3.HeaderText = "frequency";
+            this.frequencyDataGridViewTextBoxColumn3.Name = "frequencyDataGridViewTextBoxColumn3";
+            this.frequencyDataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // capacityDataGridViewTextBoxColumn3
+            // 
+            this.capacityDataGridViewTextBoxColumn3.DataPropertyName = "capacity";
+            this.capacityDataGridViewTextBoxColumn3.HeaderText = "capacity";
+            this.capacityDataGridViewTextBoxColumn3.Name = "capacityDataGridViewTextBoxColumn3";
+            this.capacityDataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // memorytypeDataGridViewTextBoxColumn1
+            // 
+            this.memorytypeDataGridViewTextBoxColumn1.DataPropertyName = "memory_type";
+            this.memorytypeDataGridViewTextBoxColumn1.HeaderText = "memory_type";
+            this.memorytypeDataGridViewTextBoxColumn1.Name = "memorytypeDataGridViewTextBoxColumn1";
+            this.memorytypeDataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // maximumthroughputDataGridViewTextBoxColumn1
+            // 
+            this.maximumthroughputDataGridViewTextBoxColumn1.DataPropertyName = "maximum_throughput";
+            this.maximumthroughputDataGridViewTextBoxColumn1.HeaderText = "maximum_throughput";
+            this.maximumthroughputDataGridViewTextBoxColumn1.Name = "maximumthroughputDataGridViewTextBoxColumn1";
+            this.maximumthroughputDataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // interfaceDataGridViewTextBoxColumn3
+            // 
+            this.interfaceDataGridViewTextBoxColumn3.DataPropertyName = "Interface";
+            this.interfaceDataGridViewTextBoxColumn3.HeaderText = "Interface";
+            this.interfaceDataGridViewTextBoxColumn3.Name = "interfaceDataGridViewTextBoxColumn3";
+            this.interfaceDataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // modelIDDataGridViewTextBoxColumn
+            // 
+            this.modelIDDataGridViewTextBoxColumn.DataPropertyName = "modelID";
+            this.modelIDDataGridViewTextBoxColumn.HeaderText = "modelID";
+            this.modelIDDataGridViewTextBoxColumn.Name = "modelIDDataGridViewTextBoxColumn";
+            this.modelIDDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.modelIDDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // modelDataGridViewTextBoxColumn2
+            // 
+            this.modelDataGridViewTextBoxColumn2.DataPropertyName = "model";
+            this.modelDataGridViewTextBoxColumn2.HeaderText = "model";
+            this.modelDataGridViewTextBoxColumn2.Name = "modelDataGridViewTextBoxColumn2";
+            this.modelDataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // seriesDataGridViewTextBoxColumn3
+            // 
+            this.seriesDataGridViewTextBoxColumn3.DataPropertyName = "series";
+            this.seriesDataGridViewTextBoxColumn3.HeaderText = "series";
+            this.seriesDataGridViewTextBoxColumn3.Name = "seriesDataGridViewTextBoxColumn3";
+            this.seriesDataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // priceDataGridViewTextBoxColumn2
+            // 
+            this.priceDataGridViewTextBoxColumn2.DataPropertyName = "price";
+            this.priceDataGridViewTextBoxColumn2.HeaderText = "price";
+            this.priceDataGridViewTextBoxColumn2.Name = "priceDataGridViewTextBoxColumn2";
             // 
             // MainForm
             // 
@@ -1018,6 +1360,7 @@
             this.userInfo_tp.ResumeLayout(false);
             this.userInfo_tp.PerformLayout();
             this.products_tp.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.productsForAdmin_dgv)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.products_dgv)).EndInit();
             this.basket_tp.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.basket_dgv)).EndInit();
@@ -1029,12 +1372,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.model_dgv)).EndInit();
             this.characteristic_tp.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.characteristic_dgv)).EndInit();
+            this.users_tp.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.users_dgv)).EndInit();
+            this.saleCard_tp.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.saleCard_dgv)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.productsForAdmin_bs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.products_bs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.basket_bs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.orders_bs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.company_bs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.model_bs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.characteristic_bs)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.user_bs)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1088,25 +1437,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn memoryDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn frequencyDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn capacityDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn memoryTypeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn maximumThroughputDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn interfaceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn countDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn inOrderDataGridViewCheckBoxColumn;
         private System.Windows.Forms.Button exit_btn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn countryDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn companyDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn modelDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn seriesDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn memoryDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn frequencyDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn capacityDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn memoryTypeDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn maximumThroughputDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn interfaceDataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn1;
         private System.Windows.Forms.TabPage company_tp;
         private System.Windows.Forms.BindingSource company_bs;
         private System.Windows.Forms.BindingSource model_bs;
@@ -1123,15 +1458,66 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn countryDataGridViewTextBoxColumn3;
         private System.Windows.Forms.TabPage characteristic_tp;
         private System.Windows.Forms.DataGridView characteristic_dgv;
-        private System.Windows.Forms.Button characteristic_btn;
+        private System.Windows.Forms.Button saveCharacteristic_btn;
         private System.Windows.Forms.BindingSource characteristic_bs;
+        private System.Windows.Forms.DataGridViewTextBoxColumn memoryTypeDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maximumThroughputDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn countryDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn companyDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn modelDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn seriesDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn memoryDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn frequencyDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn capacityDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn interfaceDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn memoryDataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn frequencyDataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn capacityDataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn memoryTypeDataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn maximumThroughputDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn memorytypeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maximumthroughputDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn interfaceDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.BindingSource productsForAdmin_bs;
+        private System.Windows.Forms.DataGridView productsForAdmin_dgv;
+        private System.Windows.Forms.TabPage users_tp;
+        private System.Windows.Forms.DataGridView users_dgv;
+        private System.Windows.Forms.Button saveUsers_btn;
+        private System.Windows.Forms.TabPage saleCard_tp;
+        private System.Windows.Forms.DataGridView saleCard_dgv;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
+        private System.Windows.Forms.Button saleCard_btn;
+        private System.Windows.Forms.BindingSource user_bs;
+        private System.Windows.Forms.DataGridViewTextBoxColumn secondNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn7;
+        private System.Windows.Forms.DataGridViewComboBoxColumn roleDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn loginDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn passwordDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.Button saveProducts_btn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn6;
+        private System.Windows.Forms.DataGridViewComboBoxColumn companyIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn countryDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn companyDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewComboBoxColumn characteristicIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn memoryDataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn frequencyDataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn capacityDataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn memorytypeDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maximumthroughputDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn interfaceDataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewComboBoxColumn modelIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn modelDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn seriesDataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn2;
     }
 }
 

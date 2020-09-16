@@ -228,8 +228,8 @@ namespace Store_kurs
             SqlCommand cmdSelect = conn.CreateCommand();
 
             cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
-                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
-                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price" + '\n' +
+                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory_type]," + '\n' +
+                                        "Characteristic.[Maximum_throughput],Characteristic.Interface,Product.Price" + '\n' +
                                     "FROM(((Product LEFT JOIN Company" + '\n' +
                                         "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
                                           "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
@@ -246,14 +246,33 @@ namespace Store_kurs
             return ds;
         }
 
+        public DataSet getProductForAdmin()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
+                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory_type]," + '\n' +
+                                        "Characteristic.[Maximum_throughput],Characteristic.Interface,Product.Price,Product.Company AS companyID,Product.Characteristic AS characteristicID,Product.Model AS modelID" + '\n' +
+                                    "FROM(((Product LEFT JOIN Company" + '\n' +
+                                        "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
+                                          "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
+                                            "ON Product.Characteristic = Characteristic.ID)";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Product");
+            return ds;
+        }
+
         public DataSet getProductMinInf()
         {
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmdSelect = conn.CreateCommand();
 
             //cmdSelect.CommandText= "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
-            //                            "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
-            //                            "Characteristic.[Maximum throughput],Characteristic.Interface" + '\n' +
+            //                            "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory_type]," + '\n' +
+            //                            "Characteristic.[Maximum_throughput],Characteristic.Interface" + '\n' +
             //                        "FROM(((Product LEFT JOIN Company" + '\n' +
             //                            "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
             //                              "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
@@ -276,8 +295,8 @@ namespace Store_kurs
             SqlCommand cmdSelect = conn.CreateCommand();
 
             cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
-                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
-                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price" + '\n' +
+                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory_type]," + '\n' +
+                                        "Characteristic.[Maximum_throughput],Characteristic.Interface,Product.Price" + '\n' +
                                     "FROM(((Product LEFT JOIN Company" + '\n' +
                                         "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
                                           "ON Product.Model = Model.ID) LEFT JOIN Characteristic" + '\n' +
@@ -365,8 +384,8 @@ namespace Store_kurs
             SqlCommand cmdSelect = conn.CreateCommand();
 
             cmdSelect.CommandText = "SELECT Product.ID,Company.Country,Company.Name AS Company,Model.Name AS Model,Model.Series,Characteristic.Memory," + '\n' +
-                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory type]," + '\n' +
-                                        "Characteristic.[Maximum throughput],Characteristic.Interface,Product.Price,Basket.ID,Basket.[Count]" + '\n' +
+                                        "Characteristic.Frequency,Characteristic.Capacity,Characteristic.[Memory_type]," + '\n' +
+                                        "Characteristic.[Maximum_throughput],Characteristic.Interface,Product.Price,Basket.ID,Basket.[Count]" + '\n' +
                                     "FROM((((Basket LEFT JOIN Product" + '\n' +
                                           "ON Basket.Product = Product.ID) LEFT JOIN Company" + '\n' +
                                           "ON Product.Company = Company.ID) LEFT JOIN Model" + '\n' +
@@ -561,6 +580,34 @@ namespace Store_kurs
             return ds;
         }
 
+        public DataSet getAllRoles()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM Role";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "Role");
+            return ds;
+        }
+
+        public DataSet getAllUsers()
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand cmdSelect = conn.CreateCommand();
+
+            cmdSelect.CommandText = "SELECT *" + '\n' +
+                                    "FROM [User]";
+            da.SelectCommand = cmdSelect;
+
+            DataSet ds = new DataSet();
+            da.Fill(ds, "User");
+            return ds;
+        }
+
         public void saveCompany(DataSet ds)
         {
             SqlDataAdapter da = new SqlDataAdapter();
@@ -657,6 +704,243 @@ namespace Store_kurs
             da.Update(ds.Tables["Model"].Select(null, null, DataViewRowState.Added));
             da.Update(ds.Tables["Model"].Select(null, null, DataViewRowState.ModifiedCurrent));
             da.Update(ds.Tables["Model"].Select(null, null, DataViewRowState.Deleted));
+        }
+
+        public void saveCharacteristic(DataSet ds)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            SqlCommand cmdInsert = conn.CreateCommand();
+            SqlCommand cmdDelete = conn.CreateCommand();
+            SqlCommand cmdUpdate = conn.CreateCommand();
+
+
+            cmdInsert.CommandText = "INSERT INTO dbo.Characteristic(Memory,Frequency,Capacity,Memory_type,Maximum_throughput,Interface)" + '\n' +
+                                    "VALUES(@memory, @frequence,@capacity,@memory_type,@maximum_throughput,@Interface);";
+
+            cmdDelete.CommandText = "DELETE" + '\n' +
+                                    "FROM dbo.Characteristic" + '\n' +
+                                    "WHERE ID = @ID AND Memory = @memory AND Frequency = @frequence AND Capacity = @capacity " +
+                                    "AND Memory_type = @memory_type AND Maximum_throughput = @maximum_throughput AND Interface = @Interface";
+
+            cmdUpdate.CommandText = "UPDATE dbo.Characteristic" + '\n' +
+                                    "SET Memory = @memory , Frequency = @frequence , Capacity = @capacity" +
+                                    ", Memory_type = @memory_type , Maximum_throughput = @maximum_throughput , Interface = @Interface" + '\n' +
+                                    "WHERE ID = @ID";
+
+            cmdInsert.Parameters.Add("@memory", SqlDbType.Int);
+            cmdInsert.Parameters["@memory"].SourceColumn = "Memory";
+            cmdInsert.Parameters.Add("@frequence", SqlDbType.Int);
+            cmdInsert.Parameters["@frequence"].SourceColumn = "Frequency";
+            cmdInsert.Parameters.Add("@capacity", SqlDbType.Int);
+            cmdInsert.Parameters["@capacity"].SourceColumn = "Capacity";
+            cmdInsert.Parameters.Add("@memory_type", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@memory_type"].SourceColumn = "Memory_type";
+            cmdInsert.Parameters.Add("@maximum_throughput", SqlDbType.Int);
+            cmdInsert.Parameters["@maximum_throughput"].SourceColumn = "Maximum_throughput";
+            cmdInsert.Parameters.Add("@Interface", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@Interface"].SourceColumn = "Interface";
+
+            cmdDelete.Parameters.Add("@ID", SqlDbType.Int);
+            cmdDelete.Parameters["@ID"].SourceColumn = "ID";
+            cmdDelete.Parameters.Add("@memory", SqlDbType.Int);
+            cmdDelete.Parameters["@memory"].SourceColumn = "Memory";
+            cmdDelete.Parameters.Add("@frequence", SqlDbType.Int);
+            cmdDelete.Parameters["@frequence"].SourceColumn = "Frequency";
+            cmdDelete.Parameters.Add("@capacity", SqlDbType.Int);
+            cmdDelete.Parameters["@capacity"].SourceColumn = "Capacity";
+            cmdDelete.Parameters.Add("@memory_type", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@memory_type"].SourceColumn = "Memory_type";
+            cmdDelete.Parameters.Add("@maximum_throughput", SqlDbType.Int);
+            cmdDelete.Parameters["@maximum_throughput"].SourceColumn = "Maximum_throughput";
+            cmdDelete.Parameters.Add("@Interface", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@Interface"].SourceColumn = "Interface";
+
+            cmdUpdate.Parameters.Add("@ID", SqlDbType.Int);
+            cmdUpdate.Parameters["@ID"].SourceColumn = "ID";
+            cmdUpdate.Parameters.Add("@memory", SqlDbType.Int);
+            cmdUpdate.Parameters["@memory"].SourceColumn = "Memory";
+            cmdUpdate.Parameters.Add("@frequence", SqlDbType.Int);
+            cmdUpdate.Parameters["@frequence"].SourceColumn = "Frequency";
+            cmdUpdate.Parameters.Add("@capacity", SqlDbType.Int);
+            cmdUpdate.Parameters["@capacity"].SourceColumn = "Capacity";
+            cmdUpdate.Parameters.Add("@memory_type", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@memory_type"].SourceColumn = "Memory_type";
+            cmdUpdate.Parameters.Add("@maximum_throughput", SqlDbType.Int);
+            cmdUpdate.Parameters["@maximum_throughput"].SourceColumn = "Maximum_throughput";
+            cmdUpdate.Parameters.Add("@Interface", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@Interface"].SourceColumn = "Interface";
+
+
+            da.InsertCommand = cmdInsert;
+            da.DeleteCommand = cmdDelete;
+            da.UpdateCommand = cmdUpdate;
+
+            da.Update(ds.Tables["Characteristic"].Select(null, null, DataViewRowState.Added));
+            da.Update(ds.Tables["Characteristic"].Select(null, null, DataViewRowState.ModifiedCurrent));
+            da.Update(ds.Tables["Characteristic"].Select(null, null, DataViewRowState.Deleted));
+        }
+
+        public void saveUser(DataSet ds)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            SqlCommand cmdInsert = conn.CreateCommand();
+            SqlCommand cmdDelete = conn.CreateCommand();
+            SqlCommand cmdUpdate = conn.CreateCommand();
+
+
+            cmdInsert.CommandText = "INSERT INTO dbo.[User](Role,Login,Password,Name,Second_name)" + '\n' +
+                                    "VALUES(@role, @login,@password,@name,@second_name);";
+
+            cmdDelete.CommandText = "DELETE" + '\n' +
+                                    "FROM dbo.[User]" + '\n' +
+                                    "WHERE ID = @ID AND Role = @role AND Login = @login AND Password = @password" +
+                                    " AND Name = @name AND Second_name = @second_name";
+
+            cmdUpdate.CommandText = "UPDATE dbo.[User]" + '\n' +
+                                    "SET Role = @role , Login = @login , Password = @password" +
+                                    ", Name = @name , Second_name = @second_name" + '\n' +
+                                    "WHERE ID = @ID";
+
+            cmdInsert.Parameters.Add("@role", SqlDbType.Int);
+            cmdInsert.Parameters["@role"].SourceColumn = "Role";
+            cmdInsert.Parameters.Add("@login", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@login"].SourceColumn = "Login";
+            cmdInsert.Parameters.Add("@password", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@password"].SourceColumn = "Password";
+            cmdInsert.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@name"].SourceColumn = "Name";
+            cmdInsert.Parameters.Add("@second_name", SqlDbType.NVarChar);
+            cmdInsert.Parameters["@second_name"].SourceColumn = "Second_name";
+
+            cmdDelete.Parameters.Add("@ID", SqlDbType.Int);
+            cmdDelete.Parameters["@ID"].SourceColumn = "ID";
+            cmdDelete.Parameters.Add("@role", SqlDbType.Int);
+            cmdDelete.Parameters["@role"].SourceColumn = "Role";
+            cmdDelete.Parameters.Add("@login", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@login"].SourceColumn = "Login";
+            cmdDelete.Parameters.Add("@password", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@password"].SourceColumn = "Password";
+            cmdDelete.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@name"].SourceColumn = "Name";
+            cmdDelete.Parameters.Add("@second_name", SqlDbType.NVarChar);
+            cmdDelete.Parameters["@second_name"].SourceColumn = "Second_name";
+
+            cmdUpdate.Parameters.Add("@ID", SqlDbType.Int);
+            cmdUpdate.Parameters["@ID"].SourceColumn = "ID";
+            cmdUpdate.Parameters.Add("@role", SqlDbType.Int);
+            cmdUpdate.Parameters["@role"].SourceColumn = "Role";
+            cmdUpdate.Parameters.Add("@login", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@login"].SourceColumn = "Login";
+            cmdUpdate.Parameters.Add("@password", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@password"].SourceColumn = "Password";
+            cmdUpdate.Parameters.Add("@name", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@name"].SourceColumn = "Name";
+            cmdUpdate.Parameters.Add("@second_name", SqlDbType.NVarChar);
+            cmdUpdate.Parameters["@second_name"].SourceColumn = "Second_name";
+
+
+            da.InsertCommand = cmdInsert;
+            da.DeleteCommand = cmdDelete;
+            da.UpdateCommand = cmdUpdate;
+
+            da.Update(ds.Tables["User"].Select(null, null, DataViewRowState.Added));
+            da.Update(ds.Tables["User"].Select(null, null, DataViewRowState.ModifiedCurrent));
+            da.Update(ds.Tables["User"].Select(null, null, DataViewRowState.Deleted));
+        }
+
+        public void saveProduct(DataSet ds)
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            SqlCommand cmdInsert = conn.CreateCommand();
+            SqlCommand cmdDelete = conn.CreateCommand();
+            SqlCommand cmdUpdate = conn.CreateCommand();
+
+
+            cmdInsert.CommandText = "INSERT INTO dbo.Product(Company,Characteristic,Model,Price)" + '\n' +
+                                    "VALUES(@company, @characteristic,@model,@price);";
+
+            cmdDelete.CommandText = "DELETE" + '\n' +
+                                    "FROM dbo.Product" + '\n' +
+                                    "WHERE ID = @ID AND Company = @company AND Characteristic = @characteristic AND Model = @model AND Price = @price";
+
+            cmdUpdate.CommandText = "UPDATE dbo.Product" + '\n' +
+                                    "SET Company = @company , Model = @model , Price = @price" + '\n' +
+                                    "WHERE ID = @ID";
+
+            cmdInsert.Parameters.Add("@company", SqlDbType.Int);
+            cmdInsert.Parameters["@company"].SourceColumn = "Company";
+            cmdInsert.Parameters.Add("@characteristic", SqlDbType.Int);
+            cmdInsert.Parameters["@characteristic"].SourceColumn = "Characteristic";
+            cmdInsert.Parameters.Add("@model", SqlDbType.Int);
+            cmdInsert.Parameters["@model"].SourceColumn = "Model";
+            cmdInsert.Parameters.Add("@price", SqlDbType.Int);
+            cmdInsert.Parameters["@price"].SourceColumn = "Price";
+
+            cmdDelete.Parameters.Add("@ID", SqlDbType.Int);
+            cmdDelete.Parameters["@ID"].SourceColumn = "ID";
+            cmdDelete.Parameters.Add("@company", SqlDbType.Int);
+            cmdDelete.Parameters["@company"].SourceColumn = "Company";
+            cmdDelete.Parameters.Add("@characteristic", SqlDbType.Int);
+            cmdDelete.Parameters["@characteristic"].SourceColumn = "Characteristic";
+            cmdDelete.Parameters.Add("@model", SqlDbType.Int);
+            cmdDelete.Parameters["@model"].SourceColumn = "Model";
+            cmdDelete.Parameters.Add("@price", SqlDbType.Int);
+            cmdDelete.Parameters["@price"].SourceColumn = "Price";
+
+            cmdUpdate.Parameters.Add("@ID", SqlDbType.Int);
+            cmdUpdate.Parameters["@ID"].SourceColumn = "ID";
+            cmdUpdate.Parameters.Add("@company", SqlDbType.Int);
+            cmdUpdate.Parameters["@company"].SourceColumn = "Company";
+            cmdUpdate.Parameters.Add("@characteristic", SqlDbType.Int);
+            cmdUpdate.Parameters["@characteristic"].SourceColumn = "Characteristic";
+            cmdUpdate.Parameters.Add("@model", SqlDbType.Int);
+            cmdUpdate.Parameters["@model"].SourceColumn = "Model";
+            cmdUpdate.Parameters.Add("@price", SqlDbType.Int);
+            cmdUpdate.Parameters["@price"].SourceColumn = "Price";
+
+
+            da.InsertCommand = cmdInsert;
+            da.DeleteCommand = cmdDelete;
+            da.UpdateCommand = cmdUpdate;
+
+            da.Update(ds.Tables["Product"].Select(null, null, DataViewRowState.Added));
+            da.Update(ds.Tables["Product"].Select(null, null, DataViewRowState.ModifiedCurrent));
+            da.Update(ds.Tables["Product"].Select(null, null, DataViewRowState.Deleted));
+        }
+
+        public void saveProduct2(List<ProductForAdmin> productsForAdmin)//чисто чтоб работало
+        {
+            SqlDataAdapter da = new SqlDataAdapter();
+
+            SqlCommand cmdInsert = conn.CreateCommand();
+            SqlCommand cmdDelete = conn.CreateCommand();
+            SqlCommand cmdUpdate = conn.CreateCommand();
+
+
+            cmdInsert.CommandText = "INSERT INTO dbo.Product(Company,Characteristic,Model,Price)" + '\n' +
+                                    "VALUES(@company, @characteristic,@model,@price);";
+
+            cmdDelete.CommandText = "DELETE" + '\n' +
+                                    "FROM dbo.Product";
+
+            cmdUpdate.CommandText = "UPDATE dbo.Product" + '\n' +
+                                    "SET Company = @company , Model = @model , Price = @price" + '\n' +
+                                    "WHERE ID = @ID";
+
+            if (productsForAdmin.Count == 0)
+                return;
+            cmdDelete.ExecuteNonQuery();
+            for (int i = 0; i < productsForAdmin.Count; i++)
+            {
+                cmdInsert.Parameters.AddWithValue("@company", productsForAdmin[i].companyID);
+                cmdInsert.Parameters.AddWithValue("@characteristic", productsForAdmin[i].characteristicID);
+                cmdInsert.Parameters.AddWithValue("@model", productsForAdmin[i].modelID);
+                cmdInsert.Parameters.AddWithValue("@price", productsForAdmin[i].price);
+                cmdInsert.ExecuteNonQuery();
+            }
         }
     }
 }

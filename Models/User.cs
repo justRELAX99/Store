@@ -14,21 +14,21 @@ namespace Store_kurs
         public String login { get; set; }
         public String password { get; set; }
         public String name { get; set; }
-        public String secondName { get; set; }
+        public String second_name { get; set; }
 
         public User()
         {
             this.ID = -1;//ставим значение -1 для проверки если юзера не нашлось в бд,тк столбец в бд не может быть отрицательным 
         }
 
-        public User(int ID,int role,String login, String password, String name, String secondName)
+        public User(int ID,int role,String login, String password, String name, String second_name)
         {
             this.ID = ID;
             this.role = role;
             this.login = login;
             this.password = password;
             this.name = name;
-            this.secondName = secondName;
+            this.second_name = second_name;
         }
 
     }
