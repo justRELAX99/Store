@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics.Eventing.Reader;
@@ -13,12 +14,12 @@ namespace Store_kurs
     public class DataBase
     {
         private SqlConnection conn;
-        public DataBase()//дефотные настройки
+        public DataBase()//считываем настройки с app.config
         {
-            String dataSource = "DESKTOP-VRM1SLK\\SQLEXPRESS";
-            String nameDataBase = "Store";
-            String userName = "sa";
-            String password = "123";
+            String dataSource = ConfigurationManager.AppSettings["dataSource"];
+            String nameDataBase = ConfigurationManager.AppSettings["nameDataBase"];
+            String userName = ConfigurationManager.AppSettings["userName"];
+            String password = ConfigurationManager.AppSettings["password"];
             SqlConnection conn = connectToSql(dataSource, nameDataBase, userName, password);
             this.conn = conn;
         }

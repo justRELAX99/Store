@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -83,6 +84,11 @@ namespace Store_kurs
             ConnectionSettingsForm connectionSettingsForm = new ConnectionSettingsForm();
             connectionSettingsForm.ShowDialog();
             this.connectionSettings = connectionSettingsForm.connectionSettings;
+            //меняем настройки подключения к бд в app.config
+            ConfigurationManager.AppSettings["dataSource"] = connectionSettings.dataSource;
+            ConfigurationManager.AppSettings["nameDataBase"] = connectionSettings.nameDataBase;
+            ConfigurationManager.AppSettings["userName"] = connectionSettings.userName;
+            ConfigurationManager.AppSettings["password"] = connectionSettings.password;
         }
     }
 }

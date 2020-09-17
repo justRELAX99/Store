@@ -37,6 +37,7 @@
             this.password_tb = new System.Windows.Forms.TextBox();
             this.password_lbl = new System.Windows.Forms.Label();
             this.saveConnectionSettings_btn = new System.Windows.Forms.Button();
+            this.exit_btn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // dataSource_lbl
@@ -107,17 +108,28 @@
             // 
             this.saveConnectionSettings_btn.Location = new System.Drawing.Point(12, 165);
             this.saveConnectionSettings_btn.Name = "saveConnectionSettings_btn";
-            this.saveConnectionSettings_btn.Size = new System.Drawing.Size(207, 23);
+            this.saveConnectionSettings_btn.Size = new System.Drawing.Size(135, 23);
             this.saveConnectionSettings_btn.TabIndex = 8;
             this.saveConnectionSettings_btn.Text = "SAVE";
             this.saveConnectionSettings_btn.UseVisualStyleBackColor = true;
             this.saveConnectionSettings_btn.Click += new System.EventHandler(this.saveConnectionSettings_btn_Click);
+            // 
+            // exit_btn
+            // 
+            this.exit_btn.Location = new System.Drawing.Point(237, 165);
+            this.exit_btn.Name = "exit_btn";
+            this.exit_btn.Size = new System.Drawing.Size(135, 23);
+            this.exit_btn.TabIndex = 9;
+            this.exit_btn.Text = "EXIT";
+            this.exit_btn.UseVisualStyleBackColor = true;
+            this.exit_btn.Click += new System.EventHandler(this.exit_btn_Click);
             // 
             // ConnectionSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 261);
+            this.Controls.Add(this.exit_btn);
             this.Controls.Add(this.saveConnectionSettings_btn);
             this.Controls.Add(this.password_tb);
             this.Controls.Add(this.password_lbl);
@@ -147,5 +159,6 @@
         private System.Windows.Forms.TextBox password_tb;
         private System.Windows.Forms.Label password_lbl;
         private System.Windows.Forms.Button saveConnectionSettings_btn;
+        private System.Windows.Forms.Button exit_btn;
     }
 }

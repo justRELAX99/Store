@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -26,7 +27,6 @@ namespace Store_kurs
             login_tb.Text = user.login;
             name_tb.Text = user.name;
             secondName_tb.Text = user.second_name;
-
             DataBase DB = new DataBase();//создаем класс Базы данных(подключаемся к ней)
             if (DB.getConnection().State == ConnectionState.Open)//если подключились
             {
@@ -92,8 +92,15 @@ namespace Store_kurs
             }
 
             int role = user.role;
-            if (role == 5)
-                store_tc.TabPages[1].Parent = null;
+            if (role == 2)
+            {
+                productsForAdmin_dgv.Visible = false;
+                saveProducts_btn.Visible = false;
+                store_tc.TabPages["company_tp"].Parent = null;
+                store_tc.TabPages["model_tp"].Parent = null;
+                store_tc.TabPages["characteristic_tp"].Parent = null;
+                store_tc.TabPages["users_tp"].Parent = null;
+            }
         }
 
         public void updateProductsForAdminDGV()

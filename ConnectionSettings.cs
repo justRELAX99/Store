@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,12 @@ namespace Store_kurs
             this.userName = userName;
             this.password = password;
         }
-        public ConnectionSettings()
+        public ConnectionSettings()//дефолтные настройки берутся из app.config
         {
-            this.dataSource = "DESKTOP-VRM1SLK\\SQLEXPRESS";
-            this.nameDataBase = "Store";
-            this.userName = "sa";
-            this.password = "123";
+            this.dataSource = ConfigurationManager.AppSettings["dataSource"];
+            this.nameDataBase = ConfigurationManager.AppSettings["nameDataBase"];
+            this.userName = ConfigurationManager.AppSettings["userName"];
+            this.password = ConfigurationManager.AppSettings["password"];
         }
     }   
 }
